@@ -66,7 +66,7 @@ body {
   width: 100%;
   height: 100%;
   z-index: 0;
-  opacity: 0.12;
+  opacity: 0.1;
   pointer-events: none;
 }
 
@@ -554,6 +554,7 @@ section {
   margin: 0 auto;
   position: relative;
   overflow: hidden;
+  z-index: 5;
 }
 
 @media (min-width: 640px) { .quiz-wrapper { padding: 40px; } }
@@ -621,6 +622,17 @@ section {
   cursor: pointer;
   transition: all 0.2s;
   width: 100%;
+  position: relative;
+  z-index: 10;
+  touch-action: manipulation;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.quiz-option:active {
+  background: var(--primary);
+  color: var(--bg);
+  transform: scale(0.98);
 }
 
 .quiz-option:hover, .quiz-option:active {
@@ -1276,7 +1288,7 @@ footer .small { font-size: 11px; opacity: 0.6; margin-top: 14px; }
       </p>
     </div>
 
-    <div class="quiz-wrapper reveal" id="quizWrapper">
+    <div class="quiz-wrapper" id="quizWrapper">
       <div class="quiz-progress" id="quizProgress">
         <div class="quiz-progress-dot active"></div>
         <div class="quiz-progress-dot"></div>
@@ -1412,9 +1424,12 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 // ===== 2. MATRIX BACKGROUND =====
+let matrixActive = true;
+let matrixPaused = false;
+
 if (!reducedMotion) {
   const canvas = document.getElementById('matrixCanvas');
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d', { alpha: true });
 
   function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -1424,34 +1439,36 @@ if (!reducedMotion) {
   window.addEventListener('resize', resizeCanvas);
 
   const chars = '01アイウエオカキクケコサシスセソタチツテト{}<>/\\|#$%&';
-  const fontSize = isMobile ? 12 : 14;
+  const fontSize = isMobile ? 14 : 14;
   const columns = Math.floor(canvas.width / fontSize);
   const drops = Array(columns).fill(1).map(() => Math.random() * canvas.height / fontSize);
 
-  function drawMatrix() {
-    ctx.fillStyle = 'rgba(10, 14, 26, 0.08)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  let lastMatrixTime = 0;
+  const matrixInterval = isMobile ? 120 : 70; // Mobilde çok daha yavaş
 
-    ctx.fillStyle = '#00ff88';
-    ctx.font = fontSize + 'px monospace';
+  function matrixLoop(now) {
+    if (matrixActive && !matrixPaused && now - lastMatrixTime > matrixInterval) {
+      lastMatrixTime = now;
 
-    for (let i = 0; i < drops.length; i++) {
-      const text = chars[Math.floor(Math.random() * chars.length)];
-      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+      ctx.fillStyle = 'rgba(10, 14, 26, 0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-        drops[i] = 0;
+      ctx.fillStyle = '#00ff88';
+      ctx.font = fontSize + 'px monospace';
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
       }
-      drops[i]++;
     }
+    requestAnimationFrame(matrixLoop);
   }
-
-  let matrixActive = true;
-  function matrixLoop() {
-    if (matrixActive) drawMatrix();
-    setTimeout(matrixLoop, isMobile ? 80 : 60);
-  }
-  matrixLoop();
+  requestAnimationFrame(matrixLoop);
 
   // Battery saver
   document.addEventListener('visibilitychange', () => {
@@ -1459,69 +1476,104 @@ if (!reducedMotion) {
   });
 }
 
-// ===== 3. KONFETI (Seite geladığında) =====
+// ===== 3. KONFETI — Mobile-optimized =====
 function fireKonfeti() {
   const canvas = document.getElementById('konfetiCanvas');
-  const ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  if (!canvas) return;
+
+  // Konfeti sırasında matrix'i duraklat (GPU rekabeti önle)
+  matrixPaused = true;
+
+  const ctx = canvas.getContext('2d', { alpha: true });
+
+  // Device pixel ratio'yu hesaba kat ama mobilde sınırla
+  const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2);
+  canvas.width = window.innerWidth * dpr;
+  canvas.height = window.innerHeight * dpr;
+  canvas.style.width = window.innerWidth + 'px';
+  canvas.style.height = window.innerHeight + 'px';
+  ctx.scale(dpr, dpr);
+
+  const w = window.innerWidth;
+  const h = window.innerHeight;
 
   const colors = ['#00ff88', '#ffb800', '#ff3d71', '#7c5cff', '#33afe2'];
+  // Mobilde çok daha az parça — performans önce
+  const count = isMobile ? 35 : 80;
   const particles = [];
-  const count = isMobile ? 60 : 120;
 
+  // Patlamayı ekranın orta-üstünden başlat, 2 tarafa saç
   for (let i = 0; i < count; i++) {
+    const angle = (Math.PI * 2) * (i / count) + (Math.random() - 0.5) * 0.5;
+    const velocity = 8 + Math.random() * 8;
     particles.push({
-      x: canvas.width / 2,
-      y: canvas.height / 3,
-      vx: (Math.random() - 0.5) * 15,
-      vy: Math.random() * -15 - 5,
-      size: Math.random() * 8 + 4,
-      color: colors[Math.floor(Math.random() * colors.length)],
+      x: w / 2,
+      y: h / 2.5,
+      vx: Math.cos(angle) * velocity * (Math.random() + 0.5),
+      vy: Math.sin(angle) * velocity * 0.6 - 10,
+      size: 6 + Math.random() * 6,
+      color: colors[i % colors.length],
       rotation: Math.random() * 360,
-      rotationSpeed: (Math.random() - 0.5) * 10,
-      gravity: 0.3,
-      life: 1
+      rotationSpeed: (Math.random() - 0.5) * 8,
+      life: 1,
+      decay: 0.012 + Math.random() * 0.008
     });
   }
 
-  let animationFrame;
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const gravity = 0.4;
+  const drag = 0.99;
+  let rafId;
+  let lastTime = performance.now();
+
+  function animate(now) {
+    const dt = Math.min((now - lastTime) / 16.67, 2); // Normalize to 60fps
+    lastTime = now;
+
+    ctx.clearRect(0, 0, w, h);
 
     let alive = 0;
-    particles.forEach(p => {
-      if (p.life <= 0) return;
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      if (p.life <= 0) continue;
       alive++;
 
-      p.vy += p.gravity;
-      p.x += p.vx;
-      p.y += p.vy;
-      p.rotation += p.rotationSpeed;
-      p.life -= 0.008;
+      p.vy += gravity * dt;
+      p.vx *= drag;
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.rotation += p.rotationSpeed * dt;
+      p.life -= p.decay * dt;
+
+      // Ekran dışına çıkanları atla (y > h + 100)
+      if (p.y > h + 100) { p.life = 0; continue; }
 
       ctx.save();
+      ctx.globalAlpha = Math.max(0, p.life);
       ctx.translate(p.x, p.y);
       ctx.rotate(p.rotation * Math.PI / 180);
-      ctx.globalAlpha = p.life;
       ctx.fillStyle = p.color;
-      ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size * 0.4);
+      ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.4);
       ctx.restore();
-    });
+    }
 
     if (alive > 0) {
-      animationFrame = requestAnimationFrame(animate);
+      rafId = requestAnimationFrame(animate);
     } else {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, w, h);
+      cancelAnimationFrame(rafId);
+      // Matrix'i geri aç
+      matrixPaused = false;
     }
   }
-  animate();
+
+  rafId = requestAnimationFrame(animate);
 }
 
 // Sayfa yüklenince konfeti patlat (1 kere)
 window.addEventListener('load', () => {
   if (!reducedMotion && !sessionStorage.getItem('timo_konfeti_shown')) {
-    setTimeout(fireKonfeti, 500);
+    // Sayfa tam stabil olduktan sonra patlat (matrix başlamış, render bitmiş)
+    setTimeout(fireKonfeti, 1200);
     sessionStorage.setItem('timo_konfeti_shown', '1');
   }
 });
