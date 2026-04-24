@@ -257,6 +257,22 @@ body {
   letter-spacing: 0.1em;
 }
 
+/* Sonsuz sembolü için sürekli pulse */
+.infinite-stat {
+  animation: infinite-pulse 2s ease-in-out infinite;
+}
+
+@keyframes infinite-pulse {
+  0%, 100% {
+    transform: scale(1);
+    text-shadow: 0 0 0 rgba(0, 255, 136, 0);
+  }
+  50% {
+    transform: scale(1.15);
+    text-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+  }
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -317,37 +333,68 @@ section {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 16px;
-  transition: border-color 0.3s, transform 0.3s;
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.4s;
   position: relative;
   overflow: hidden;
 }
 
+/* Sürekli çalışan shimmer bar üstte */
 .achievement::before {
   content: '';
   position: absolute;
-  top: 0; left: 0;
+  top: 0; left: -100%;
   width: 100%; height: 3px;
-  background: linear-gradient(90deg, var(--primary), var(--accent2));
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.4s;
+  background: linear-gradient(90deg, transparent, var(--primary) 20%, var(--accent2) 50%, var(--primary) 80%, transparent);
+  animation: shimmer-bar 3s ease-in-out infinite;
 }
 
-@media (hover: none) {
-  .achievement::before { transform: scaleX(0.3); opacity: 0.6; }
-  .achievement:active::before { transform: scaleX(1); opacity: 1; }
-  .achievement:active {
-    border-color: var(--primary);
-    transform: scale(0.98);
+.achievement.visible::before {
+  animation: shimmer-bar 3s ease-in-out infinite;
+}
+
+@keyframes shimmer-bar {
+  0% { left: -100%; }
+  50% { left: 100%; }
+  100% { left: 100%; }
+}
+
+/* Her kartın shimmer'ı farklı zamanda başlasın (stagger) */
+.achievement:nth-child(1)::before { animation-delay: 0s; }
+.achievement:nth-child(2)::before { animation-delay: 0.4s; }
+.achievement:nth-child(3)::before { animation-delay: 0.8s; }
+.achievement:nth-child(4)::before { animation-delay: 1.2s; }
+.achievement:nth-child(5)::before { animation-delay: 1.6s; }
+.achievement:nth-child(6)::before { animation-delay: 2.0s; }
+
+/* Sürekli hafif glow animasyonu */
+.achievement.visible {
+  animation: card-pulse 4s ease-in-out infinite;
+}
+
+.achievement:nth-child(1).visible { animation-delay: 0s; }
+.achievement:nth-child(2).visible { animation-delay: 0.5s; }
+.achievement:nth-child(3).visible { animation-delay: 1s; }
+.achievement:nth-child(4).visible { animation-delay: 1.5s; }
+.achievement:nth-child(5).visible { animation-delay: 2s; }
+.achievement:nth-child(6).visible { animation-delay: 2.5s; }
+
+@keyframes card-pulse {
+  0%, 100% {
+    border-color: var(--border);
+    box-shadow: 0 0 0 rgba(0, 255, 136, 0);
+  }
+  50% {
+    border-color: rgba(0, 255, 136, 0.3);
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.1);
   }
 }
 
 @media (hover: hover) {
-  .achievement:hover::before { transform: scaleX(1); }
   .achievement:hover {
     transform: translateY(-6px);
     border-color: var(--primary);
     box-shadow: var(--glow);
+    animation-play-state: paused;
   }
 }
 
@@ -355,6 +402,19 @@ section {
   font-size: 36px;
   margin-bottom: 16px;
   display: inline-block;
+  animation: icon-float 3s ease-in-out infinite;
+}
+
+.achievement:nth-child(1) .achievement-icon { animation-delay: 0s; }
+.achievement:nth-child(2) .achievement-icon { animation-delay: 0.3s; }
+.achievement:nth-child(3) .achievement-icon { animation-delay: 0.6s; }
+.achievement:nth-child(4) .achievement-icon { animation-delay: 0.9s; }
+.achievement:nth-child(5) .achievement-icon { animation-delay: 1.2s; }
+.achievement:nth-child(6) .achievement-icon { animation-delay: 1.5s; }
+
+@keyframes icon-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(3deg); }
 }
 
 .achievement h3 {
@@ -447,20 +507,56 @@ section {
   border-radius: 16px;
   border-left: 3px solid var(--primary);
   transition: transform 0.3s;
+  position: relative;
+  overflow: hidden;
 }
 
 .power:nth-child(2) { border-left-color: var(--accent); }
 .power:nth-child(3) { border-left-color: var(--accent2); }
 .power:nth-child(4) { border-left-color: #7c5cff; }
 
-@media (hover: hover) {
-  .power:hover { transform: translateX(6px); }
+/* Sürekli animate — border-left'i pulse et */
+.power.visible {
+  animation: power-breath 3s ease-in-out infinite;
 }
 
-@media (hover: none) {
-  .power:active { transform: scale(0.98); }
+.power:nth-child(1).visible { animation-delay: 0s; }
+.power:nth-child(2).visible { animation-delay: 0.4s; }
+.power:nth-child(3).visible { animation-delay: 0.8s; }
+.power:nth-child(4).visible { animation-delay: 1.2s; }
+
+@keyframes power-breath {
+  0%, 100% {
+    border-left-width: 3px;
+    box-shadow: -3px 0 0 rgba(0, 255, 136, 0);
+  }
+  50% {
+    border-left-width: 5px;
+    box-shadow: -3px 0 20px rgba(0, 255, 136, 0.2);
+  }
 }
 
+/* Her renk için farklı glow */
+.power:nth-child(2).visible { animation-name: power-breath-2; }
+.power:nth-child(3).visible { animation-name: power-breath-3; }
+.power:nth-child(4).visible { animation-name: power-breath-4; }
+
+@keyframes power-breath-2 {
+  0%, 100% { border-left-width: 3px; box-shadow: -3px 0 0 rgba(255, 61, 113, 0); }
+  50% { border-left-width: 5px; box-shadow: -3px 0 20px rgba(255, 61, 113, 0.2); }
+}
+
+@keyframes power-breath-3 {
+  0%, 100% { border-left-width: 3px; box-shadow: -3px 0 0 rgba(255, 184, 0, 0); }
+  50% { border-left-width: 5px; box-shadow: -3px 0 20px rgba(255, 184, 0, 0.2); }
+}
+
+@keyframes power-breath-4 {
+  0%, 100% { border-left-width: 3px; box-shadow: -3px 0 0 rgba(124, 92, 255, 0); }
+  50% { border-left-width: 5px; box-shadow: -3px 0 20px rgba(124, 92, 255, 0.2); }
+}
+
+/* Power label — subtle color cycle */
 .power-label {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
@@ -468,6 +564,21 @@ section {
   text-transform: uppercase;
   letter-spacing: 0.15em;
   margin-bottom: 8px;
+  animation: label-glow 4s ease-in-out infinite;
+}
+
+.power:nth-child(1) .power-label { animation-delay: 0s; }
+.power:nth-child(2) .power-label { animation-delay: 0.5s; }
+.power:nth-child(3) .power-label { animation-delay: 1s; }
+.power:nth-child(4) .power-label { animation-delay: 1.5s; }
+
+@keyframes label-glow {
+  0%, 100% { color: var(--text-dim); }
+  50% { color: var(--primary); }
+}
+
+@media (hover: hover) {
+  .power:hover { transform: translateX(6px); }
 }
 
 .power h3 {
@@ -609,7 +720,29 @@ section {
   border-radius: 12px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
-  transition: border-color 0.3s, transform 0.3s, background 0.3s;
+  transition: border-color 0.6s, transform 0.6s, background 0.6s;
+  animation: path-spotlight 12s ease-in-out infinite;
+}
+
+/* Her kart sırayla öne çıksın — spotlight cycle */
+.path:nth-child(1) { animation-delay: 0s; }
+.path:nth-child(2) { animation-delay: 2s; }
+.path:nth-child(3) { animation-delay: 4s; }
+.path:nth-child(4) { animation-delay: 6s; }
+.path:nth-child(5) { animation-delay: 8s; }
+.path:nth-child(6) { animation-delay: 10s; }
+
+@keyframes path-spotlight {
+  0%, 85%, 100% {
+    border-color: var(--border);
+    background: var(--bg-card);
+    transform: scale(1);
+  }
+  8%, 16% {
+    border-color: var(--primary);
+    background: var(--bg-elev);
+    transform: scale(1.05);
+  }
 }
 
 @media (min-width: 640px) {
@@ -621,14 +754,7 @@ section {
     border-color: var(--primary);
     background: var(--bg-elev);
     transform: scale(1.05);
-  }
-}
-
-@media (hover: none) {
-  .path:active {
-    border-color: var(--primary);
-    background: var(--bg-elev);
-    transform: scale(0.97);
+    animation-play-state: paused;
   }
 }
 
@@ -636,6 +762,19 @@ section {
   font-size: 28px;
   display: block;
   margin-bottom: 6px;
+  animation: emoji-bounce 2.5s ease-in-out infinite;
+}
+
+.path:nth-child(1) .path-emoji { animation-delay: 0s; }
+.path:nth-child(2) .path-emoji { animation-delay: 0.3s; }
+.path:nth-child(3) .path-emoji { animation-delay: 0.6s; }
+.path:nth-child(4) .path-emoji { animation-delay: 0.9s; }
+.path:nth-child(5) .path-emoji { animation-delay: 1.2s; }
+.path:nth-child(6) .path-emoji { animation-delay: 1.5s; }
+
+@keyframes emoji-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 
 @media (min-width: 640px) {
@@ -760,19 +899,19 @@ footer .small {
 
     <div class="hero-stats">
       <div class="stat">
-        <div class="stat-value">5</div>
+        <div class="stat-value" data-target="5" data-suffix="">0</div>
         <div class="stat-label">Tage Mut</div>
       </div>
       <div class="stat">
-        <div class="stat-value">∞</div>
+        <div class="stat-value infinite-stat">∞</div>
         <div class="stat-label">Fragen</div>
       </div>
       <div class="stat">
-        <div class="stat-value">0</div>
+        <div class="stat-value" data-target="0" data-suffix="">0</div>
         <div class="stat-label">Angst</div>
       </div>
       <div class="stat">
-        <div class="stat-value">100%</div>
+        <div class="stat-value" data-target="100" data-suffix="%">0%</div>
         <div class="stat-label">Einsatz</div>
       </div>
     </div>
@@ -1056,6 +1195,50 @@ if ('IntersectionObserver' in window) {
 } else {
   document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
 }
+
+// ===== STAT COUNTER — Sayfa yüklenince sayıları 0'dan hedefe anime et =====
+function animateCounter(el) {
+  const target = parseInt(el.dataset.target, 10);
+  const suffix = el.dataset.suffix || '';
+  const duration = 1500; // ms
+  const steps = 40;
+  const stepTime = duration / steps;
+  let current = 0;
+  const increment = target / steps;
+
+  // 0 hedef için özel (sadece 0 göster, animasyon yok ama pulse efekti)
+  if (target === 0) {
+    el.textContent = '0' + suffix;
+    el.style.animation = 'infinite-pulse 2s ease-in-out infinite';
+    return;
+  }
+
+  const timer = setInterval(() => {
+    current += increment;
+    if (current >= target) {
+      el.textContent = target + suffix;
+      clearInterval(timer);
+    } else {
+      el.textContent = Math.floor(current) + suffix;
+    }
+  }, stepTime);
+}
+
+// Hero stats'a özel observer — görünür olunca bir kere anime et
+const statsObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const statValues = entry.target.querySelectorAll('.stat-value[data-target]');
+      statValues.forEach((el, idx) => {
+        setTimeout(() => animateCounter(el), idx * 150);
+      });
+      statsObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+
+const heroStats = document.querySelector('.hero-stats');
+if (heroStats) statsObserver.observe(heroStats);
 
 // ===== Visibility API — battery saver =====
 document.addEventListener('visibilitychange', () => {
