@@ -9,7 +9,7 @@
 <title>Timo Janzen · BoGy bei Hasi Elektronic</title>
 <meta name="description" content="Timo Janzens BoGy-Praktikum bei Hasi Elektronic — eine Woche voller Technik, Neugier und echter Arbeit.">
 <meta property="og:title" content="Timo Janzen · BoGy bei Hasi Elektronic">
-<meta property="og:description" content="Eine Woche. Unendlich viele Möglichkeiten. Und ein junger Mensch, der keine Angst hat, alles auszuprobieren.">
+<meta property="og:description" content="Eine Woche. Unendlich viele Möglichkeiten.">
 <meta property="og:type" content="website">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,16 +27,14 @@
   --primary-dim: #00cc6f;
   --accent: #ff3d71;
   --accent2: #ffb800;
+  --purple: #7c5cff;
   --text: #e8ecf5;
   --text-dim: #8892a8;
   --border: #222938;
   --glow: 0 0 30px rgba(0, 255, 136, 0.25);
 }
 
-html {
-  scroll-behavior: smooth;
-  -webkit-text-size-adjust: 100%;
-}
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
 body {
   font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -45,12 +43,44 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
   min-height: -webkit-fill-available;
 }
 
-/* ===== MOBIL-OPTIMIERTER HINTERGRUND ===== */
+/* ===== SCROLL PROGRESS BAR ===== */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--accent2), var(--accent));
+  z-index: 1000;
+  transition: width 0.1s ease;
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+/* ===== MATRIX / PARTICLE CANVAS ===== */
+.matrix-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+/* ===== KONFETI CANVAS ===== */
+.konfeti-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  pointer-events: none;
+}
+
+/* ===== BG BLOBS ===== */
 .bg-layer {
   position: absolute;
   inset: 0;
@@ -78,19 +108,15 @@ body {
 }
 
 .blob-1 {
-  top: -10%;
-  left: -10%;
-  width: 400px;
-  height: 400px;
+  top: -10%; left: -10%;
+  width: 400px; height: 400px;
   background: #00ff88;
   animation: float-1 20s ease-in-out infinite;
 }
 
 .blob-2 {
-  bottom: -10%;
-  right: -10%;
-  width: 500px;
-  height: 500px;
+  bottom: -10%; right: -10%;
+  width: 500px; height: 500px;
   background: #ff3d71;
   opacity: 0.2;
   animation: float-2 25s ease-in-out infinite;
@@ -117,9 +143,8 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
-  .blob { animation: none !important; }
+  .blob, .matrix-canvas { animation: none !important; display: none; }
 }
 
 .container {
@@ -127,7 +152,7 @@ body {
   margin: 0 auto;
   padding: 0 20px;
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 /* ===== HERO ===== */
@@ -156,18 +181,10 @@ body {
   margin-bottom: 28px;
   opacity: 0;
   animation: fadeIn 0.6s ease forwards;
-  max-width: 100%;
-}
-
-.hero-badge span:last-child {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .hero-badge .pulse {
-  width: 7px;
-  height: 7px;
+  width: 7px; height: 7px;
   background: var(--primary);
   border-radius: 50%;
   flex-shrink: 0;
@@ -176,7 +193,7 @@ body {
 
 @keyframes pulse-dot {
   0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--primary); }
-  50% { opacity: 0.4; box-shadow: 0 0 2px var(--primary); }
+  50% { opacity: 0.4; }
 }
 
 .hero h1 {
@@ -206,9 +223,7 @@ body {
   animation: fadeIn 1s ease 0.3s forwards;
 }
 
-.hero-sub strong {
-  color: var(--primary);
-}
+.hero-sub strong { color: var(--primary); }
 
 .hero-stats {
   display: grid;
@@ -220,10 +235,7 @@ body {
 }
 
 @media (min-width: 640px) {
-  .hero-stats {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-  }
+  .hero-stats { grid-template-columns: repeat(4, 1fr); gap: 16px; }
 }
 
 .stat {
@@ -231,15 +243,8 @@ body {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 12px;
-  transition: border-color 0.25s, transform 0.25s;
-}
-
-@media (hover: hover) {
-  .stat:hover {
-    border-color: var(--primary);
-    transform: translateY(-4px);
-    box-shadow: var(--glow);
-  }
+  transition: all 0.3s;
+  transform-style: preserve-3d;
 }
 
 .stat-value {
@@ -257,20 +262,13 @@ body {
   letter-spacing: 0.1em;
 }
 
-/* Sonsuz sembolü için sürekli pulse */
 .infinite-stat {
   animation: infinite-pulse 2s ease-in-out infinite;
 }
 
 @keyframes infinite-pulse {
-  0%, 100% {
-    transform: scale(1);
-    text-shadow: 0 0 0 rgba(0, 255, 136, 0);
-  }
-  50% {
-    transform: scale(1.15);
-    text-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
-  }
+  0%, 100% { transform: scale(1); text-shadow: 0 0 0 rgba(0, 255, 136, 0); }
+  50% { transform: scale(1.15); text-shadow: 0 0 20px rgba(0, 255, 136, 0.6); }
 }
 
 @keyframes fadeIn {
@@ -284,9 +282,7 @@ section {
   position: relative;
 }
 
-@media (min-width: 768px) {
-  section { padding: 100px 0; }
-}
+@media (min-width: 768px) { section { padding: 100px 0; } }
 
 .section-label {
   display: inline-block;
@@ -313,6 +309,154 @@ section {
   margin-bottom: 48px;
 }
 
+/* ===== TIMELINE (5 GÜN HİKAYE) ===== */
+.timeline {
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--primary) 0%, var(--accent2) 50%, var(--accent) 100%);
+  opacity: 0.3;
+}
+
+@media (min-width: 768px) {
+  .timeline::before { left: 50%; transform: translateX(-50%); }
+}
+
+.day {
+  position: relative;
+  padding-left: 56px;
+  margin-bottom: 32px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s, transform 0.7s;
+}
+
+.day.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (min-width: 768px) {
+  .day {
+    padding-left: 0;
+    width: 50%;
+    margin-bottom: 48px;
+  }
+  .day:nth-child(odd) {
+    padding-right: 40px;
+    text-align: right;
+  }
+  .day:nth-child(even) {
+    margin-left: 50%;
+    padding-left: 40px;
+  }
+}
+
+.day-dot {
+  position: absolute;
+  left: 14px;
+  top: 20px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: 3px solid var(--bg);
+  box-shadow: 0 0 0 3px var(--primary), 0 0 20px rgba(0, 255, 136, 0.5);
+  z-index: 2;
+  animation: dot-pulse 2s ease-in-out infinite;
+}
+
+.day:nth-child(2) .day-dot { background: var(--accent); box-shadow: 0 0 0 3px var(--accent), 0 0 20px rgba(255, 61, 113, 0.5); }
+.day:nth-child(3) .day-dot { background: var(--accent2); box-shadow: 0 0 0 3px var(--accent2), 0 0 20px rgba(255, 184, 0, 0.5); }
+.day:nth-child(4) .day-dot { background: var(--purple); box-shadow: 0 0 0 3px var(--purple), 0 0 20px rgba(124, 92, 255, 0.5); }
+.day:nth-child(5) .day-dot { background: var(--primary); box-shadow: 0 0 0 3px var(--primary), 0 0 20px rgba(0, 255, 136, 0.8); }
+
+@media (min-width: 768px) {
+  .day-dot { left: calc(50% - 8px); }
+  .day:nth-child(odd) .day-dot { left: auto; right: -8px; }
+  .day:nth-child(even) .day-dot { left: -8px; }
+}
+
+@keyframes dot-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+.day-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.4s;
+  position: relative;
+  overflow: hidden;
+}
+
+.day-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  background: var(--primary);
+  opacity: 0.6;
+}
+
+.day:nth-child(2) .day-card::before { background: var(--accent); }
+.day:nth-child(3) .day-card::before { background: var(--accent2); }
+.day:nth-child(4) .day-card::before { background: var(--purple); }
+
+.day-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--primary);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.day:nth-child(2) .day-label { color: var(--accent); }
+.day:nth-child(3) .day-label { color: var(--accent2); }
+.day:nth-child(4) .day-label { color: var(--purple); }
+
+.day-card h3 {
+  font-size: 22px;
+  margin-bottom: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.day-card p {
+  color: var(--text-dim);
+  font-size: 15px;
+  margin-bottom: 16px;
+}
+
+.day-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--primary);
+}
+
+.day:nth-child(2) .day-badge { background: rgba(255, 61, 113, 0.1); border-color: rgba(255, 61, 113, 0.3); color: var(--accent); }
+.day:nth-child(3) .day-badge { background: rgba(255, 184, 0, 0.1); border-color: rgba(255, 184, 0, 0.3); color: var(--accent2); }
+.day:nth-child(4) .day-badge { background: rgba(124, 92, 255, 0.1); border-color: rgba(124, 92, 255, 0.3); color: var(--purple); }
+
 /* ===== ACHIEVEMENTS ===== */
 .achievements-grid {
   display: grid;
@@ -336,9 +480,9 @@ section {
   transition: border-color 0.3s, transform 0.3s, box-shadow 0.4s;
   position: relative;
   overflow: hidden;
+  transform-style: preserve-3d;
 }
 
-/* Sürekli çalışan shimmer bar üstte */
 .achievement::before {
   content: '';
   position: absolute;
@@ -348,17 +492,12 @@ section {
   animation: shimmer-bar 3s ease-in-out infinite;
 }
 
-.achievement.visible::before {
-  animation: shimmer-bar 3s ease-in-out infinite;
-}
-
 @keyframes shimmer-bar {
   0% { left: -100%; }
   50% { left: 100%; }
   100% { left: 100%; }
 }
 
-/* Her kartın shimmer'ı farklı zamanda başlasın (stagger) */
 .achievement:nth-child(1)::before { animation-delay: 0s; }
 .achievement:nth-child(2)::before { animation-delay: 0.4s; }
 .achievement:nth-child(3)::before { animation-delay: 0.8s; }
@@ -366,36 +505,13 @@ section {
 .achievement:nth-child(5)::before { animation-delay: 1.6s; }
 .achievement:nth-child(6)::before { animation-delay: 2.0s; }
 
-/* Sürekli hafif glow animasyonu */
 .achievement.visible {
   animation: card-pulse 4s ease-in-out infinite;
 }
 
-.achievement:nth-child(1).visible { animation-delay: 0s; }
-.achievement:nth-child(2).visible { animation-delay: 0.5s; }
-.achievement:nth-child(3).visible { animation-delay: 1s; }
-.achievement:nth-child(4).visible { animation-delay: 1.5s; }
-.achievement:nth-child(5).visible { animation-delay: 2s; }
-.achievement:nth-child(6).visible { animation-delay: 2.5s; }
-
 @keyframes card-pulse {
-  0%, 100% {
-    border-color: var(--border);
-    box-shadow: 0 0 0 rgba(0, 255, 136, 0);
-  }
-  50% {
-    border-color: rgba(0, 255, 136, 0.3);
-    box-shadow: 0 0 20px rgba(0, 255, 136, 0.1);
-  }
-}
-
-@media (hover: hover) {
-  .achievement:hover {
-    transform: translateY(-6px);
-    border-color: var(--primary);
-    box-shadow: var(--glow);
-    animation-play-state: paused;
-  }
+  0%, 100% { border-color: var(--border); box-shadow: 0 0 0 rgba(0, 255, 136, 0); }
+  50% { border-color: rgba(0, 255, 136, 0.3); box-shadow: 0 0 20px rgba(0, 255, 136, 0.1); }
 }
 
 .achievement-icon {
@@ -428,6 +544,141 @@ section {
   font-size: 14px;
 }
 
+/* ===== QUIZ ===== */
+.quiz-wrapper {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px 24px;
+  max-width: 700px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (min-width: 640px) { .quiz-wrapper { padding: 40px; } }
+
+.quiz-wrapper::before {
+  content: '';
+  position: absolute;
+  top: -2px; left: -2px; right: -2px; bottom: -2px;
+  background: linear-gradient(45deg, var(--primary), var(--accent2), var(--accent), var(--purple));
+  border-radius: 22px;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s;
+  filter: blur(8px);
+}
+
+.quiz-wrapper.active::before {
+  opacity: 0.5;
+  animation: gradient-spin 8s linear infinite;
+}
+
+@keyframes gradient-spin {
+  0% { filter: blur(8px) hue-rotate(0deg); }
+  100% { filter: blur(8px) hue-rotate(360deg); }
+}
+
+.quiz-progress {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.quiz-progress-dot {
+  flex: 1;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  transition: background 0.3s;
+}
+
+.quiz-progress-dot.active { background: var(--primary); box-shadow: 0 0 8px var(--primary); }
+.quiz-progress-dot.done { background: var(--primary-dim); }
+
+.quiz-question {
+  font-size: clamp(18px, 2.5vw, 24px);
+  font-weight: 600;
+  margin-bottom: 24px;
+  min-height: 60px;
+}
+
+.quiz-options {
+  display: grid;
+  gap: 10px;
+}
+
+.quiz-option {
+  padding: 14px 18px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.quiz-option:hover, .quiz-option:active {
+  border-color: var(--primary);
+  background: rgba(0, 255, 136, 0.08);
+  transform: translateX(4px);
+}
+
+.quiz-result {
+  text-align: center;
+  padding: 16px 0;
+}
+
+.quiz-result-emoji {
+  font-size: 72px;
+  display: block;
+  margin-bottom: 16px;
+  animation: bounce-in 0.6s ease;
+}
+
+@keyframes bounce-in {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.quiz-result h3 {
+  font-size: clamp(22px, 4vw, 32px);
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, var(--primary), var(--accent2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.quiz-result p {
+  color: var(--text-dim);
+  margin-bottom: 20px;
+}
+
+.quiz-restart {
+  background: transparent;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  padding: 10px 24px;
+  border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quiz-restart:hover, .quiz-restart:active {
+  background: var(--primary);
+  color: var(--bg);
+}
+
 /* ===== TERMINAL ===== */
 .terminal {
   background: #0d1220;
@@ -457,9 +708,6 @@ section {
   font-size: 12px;
   color: var(--text-dim);
   margin-left: 10px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .terminal-body {
@@ -472,11 +720,7 @@ section {
 }
 
 @media (min-width: 640px) {
-  .terminal-body {
-    padding: 24px;
-    font-size: 14px;
-    line-height: 1.8;
-  }
+  .terminal-body { padding: 24px; font-size: 14px; line-height: 1.8; }
 }
 
 .term-line { display: block; white-space: nowrap; }
@@ -486,6 +730,18 @@ section {
 .term-keyword { color: var(--accent); }
 .term-output { color: var(--text); opacity: 0.9; }
 
+.typing::after {
+  content: '▋';
+  animation: cursor-blink 1s infinite;
+  color: var(--primary);
+  margin-left: 2px;
+}
+
+@keyframes cursor-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
 /* ===== SUPERPOWERS ===== */
 .superpowers {
   display: grid;
@@ -493,70 +749,46 @@ section {
   gap: 14px;
 }
 
-@media (min-width: 560px) {
-  .superpowers { grid-template-columns: repeat(2, 1fr); gap: 18px; }
-}
-
-@media (min-width: 900px) {
-  .superpowers { grid-template-columns: repeat(4, 1fr); }
-}
+@media (min-width: 560px) { .superpowers { grid-template-columns: repeat(2, 1fr); gap: 18px; } }
+@media (min-width: 900px) { .superpowers { grid-template-columns: repeat(4, 1fr); } }
 
 .power {
   padding: 22px;
   background: var(--bg-elev);
   border-radius: 16px;
   border-left: 3px solid var(--primary);
-  transition: transform 0.3s;
   position: relative;
   overflow: hidden;
+  transform-style: preserve-3d;
 }
 
 .power:nth-child(2) { border-left-color: var(--accent); }
 .power:nth-child(3) { border-left-color: var(--accent2); }
-.power:nth-child(4) { border-left-color: #7c5cff; }
+.power:nth-child(4) { border-left-color: var(--purple); }
 
-/* Sürekli animate — border-left'i pulse et */
-.power.visible {
-  animation: power-breath 3s ease-in-out infinite;
-}
-
+.power.visible { animation: power-breath 3s ease-in-out infinite; }
 .power:nth-child(1).visible { animation-delay: 0s; }
-.power:nth-child(2).visible { animation-delay: 0.4s; }
-.power:nth-child(3).visible { animation-delay: 0.8s; }
-.power:nth-child(4).visible { animation-delay: 1.2s; }
+.power:nth-child(2).visible { animation-delay: 0.4s; animation-name: power-breath-2; }
+.power:nth-child(3).visible { animation-delay: 0.8s; animation-name: power-breath-3; }
+.power:nth-child(4).visible { animation-delay: 1.2s; animation-name: power-breath-4; }
 
 @keyframes power-breath {
-  0%, 100% {
-    border-left-width: 3px;
-    box-shadow: -3px 0 0 rgba(0, 255, 136, 0);
-  }
-  50% {
-    border-left-width: 5px;
-    box-shadow: -3px 0 20px rgba(0, 255, 136, 0.2);
-  }
+  0%, 100% { border-left-width: 3px; box-shadow: -3px 0 0 rgba(0, 255, 136, 0); }
+  50% { border-left-width: 5px; box-shadow: -3px 0 20px rgba(0, 255, 136, 0.2); }
 }
-
-/* Her renk için farklı glow */
-.power:nth-child(2).visible { animation-name: power-breath-2; }
-.power:nth-child(3).visible { animation-name: power-breath-3; }
-.power:nth-child(4).visible { animation-name: power-breath-4; }
-
 @keyframes power-breath-2 {
   0%, 100% { border-left-width: 3px; box-shadow: -3px 0 0 rgba(255, 61, 113, 0); }
   50% { border-left-width: 5px; box-shadow: -3px 0 20px rgba(255, 61, 113, 0.2); }
 }
-
 @keyframes power-breath-3 {
   0%, 100% { border-left-width: 3px; box-shadow: -3px 0 0 rgba(255, 184, 0, 0); }
   50% { border-left-width: 5px; box-shadow: -3px 0 20px rgba(255, 184, 0, 0.2); }
 }
-
 @keyframes power-breath-4 {
   0%, 100% { border-left-width: 3px; box-shadow: -3px 0 0 rgba(124, 92, 255, 0); }
   50% { border-left-width: 5px; box-shadow: -3px 0 20px rgba(124, 92, 255, 0.2); }
 }
 
-/* Power label — subtle color cycle */
 .power-label {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
@@ -575,10 +807,6 @@ section {
 @keyframes label-glow {
   0%, 100% { color: var(--text-dim); }
   50% { color: var(--primary); }
-}
-
-@media (hover: hover) {
-  .power:hover { transform: translateX(6px); }
 }
 
 .power h3 {
@@ -601,19 +829,13 @@ section {
   position: relative;
 }
 
-@media (min-width: 640px) {
-  .message { padding: 40px; border-radius: 24px; }
-}
-
-@media (min-width: 900px) {
-  .message { padding: 48px; }
-}
+@media (min-width: 640px) { .message { padding: 40px; border-radius: 24px; } }
+@media (min-width: 900px) { .message { padding: 48px; } }
 
 .message::before {
   content: '"';
   position: absolute;
-  top: 10px;
-  left: 20px;
+  top: 10px; left: 20px;
   font-size: 80px;
   color: var(--primary);
   opacity: 0.2;
@@ -649,8 +871,7 @@ section {
 }
 
 .author-avatar {
-  width: 48px;
-  height: 48px;
+  width: 48px; height: 48px;
   border-radius: 50%;
   background: linear-gradient(135deg, #33afe2, #00ff88);
   display: flex;
@@ -666,16 +887,8 @@ section {
   .author-avatar { width: 56px; height: 56px; font-size: 20px; }
 }
 
-.author-info strong {
-  display: block;
-  font-size: 15px;
-  margin-bottom: 2px;
-}
-
-.author-info span {
-  font-size: 12px;
-  color: var(--text-dim);
-}
+.author-info strong { display: block; font-size: 15px; margin-bottom: 2px; }
+.author-info span { font-size: 12px; color: var(--text-dim); }
 
 /* ===== FUTURE ===== */
 .future {
@@ -709,9 +922,7 @@ section {
   margin: 36px auto;
 }
 
-@media (min-width: 560px) {
-  .future-paths { grid-template-columns: repeat(3, 1fr); gap: 14px; }
-}
+@media (min-width: 560px) { .future-paths { grid-template-columns: repeat(3, 1fr); gap: 14px; } }
 
 .path {
   padding: 18px 12px;
@@ -724,7 +935,6 @@ section {
   animation: path-spotlight 12s ease-in-out infinite;
 }
 
-/* Her kart sırayla öne çıksın — spotlight cycle */
 .path:nth-child(1) { animation-delay: 0s; }
 .path:nth-child(2) { animation-delay: 2s; }
 .path:nth-child(3) { animation-delay: 4s; }
@@ -733,30 +943,11 @@ section {
 .path:nth-child(6) { animation-delay: 10s; }
 
 @keyframes path-spotlight {
-  0%, 85%, 100% {
-    border-color: var(--border);
-    background: var(--bg-card);
-    transform: scale(1);
-  }
-  8%, 16% {
-    border-color: var(--primary);
-    background: var(--bg-elev);
-    transform: scale(1.05);
-  }
+  0%, 85%, 100% { border-color: var(--border); background: var(--bg-card); transform: scale(1); }
+  8%, 16% { border-color: var(--primary); background: var(--bg-elev); transform: scale(1.05); }
 }
 
-@media (min-width: 640px) {
-  .path { padding: 24px 16px; font-size: 14px; }
-}
-
-@media (hover: hover) {
-  .path:hover {
-    border-color: var(--primary);
-    background: var(--bg-elev);
-    transform: scale(1.05);
-    animation-play-state: paused;
-  }
-}
+@media (min-width: 640px) { .path { padding: 24px 16px; font-size: 14px; } }
 
 .path-emoji {
   font-size: 28px;
@@ -803,6 +994,8 @@ footer {
   border-top: 1px solid var(--border);
   text-align: center;
   background: var(--bg-card);
+  position: relative;
+  z-index: 2;
 }
 
 .footer-logo {
@@ -832,24 +1025,7 @@ footer p {
   margin-bottom: 6px;
 }
 
-footer .small {
-  font-size: 11px;
-  opacity: 0.6;
-  margin-top: 14px;
-}
-
-/* ===== TYPING EFFECT ===== */
-.typing::after {
-  content: '▋';
-  animation: cursor-blink 1s infinite;
-  color: var(--primary);
-  margin-left: 2px;
-}
-
-@keyframes cursor-blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
+footer .small { font-size: 11px; opacity: 0.6; margin-top: 14px; }
 
 /* ===== REVEAL ===== */
 .reveal {
@@ -866,19 +1042,34 @@ footer .small {
   will-change: auto;
 }
 
-@media (max-width: 640px) {
-  .reveal { transform: translateY(20px); }
+@media (max-width: 640px) { .reveal { transform: translateY(20px); } }
+
+/* ===== TILT PERSPECTIVE ===== */
+.tiltable {
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 </style>
 </head>
 <body>
 
+<!-- Scroll Progress -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- Matrix background -->
+<canvas class="matrix-canvas" id="matrixCanvas"></canvas>
+
+<!-- Konfeti canvas -->
+<canvas class="konfeti-canvas" id="konfetiCanvas"></canvas>
+
+<!-- Background blobs -->
 <div class="bg-layer">
   <div class="bg-grid"></div>
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
 </div>
 
+<!-- ===== HERO ===== -->
 <section class="hero">
   <div class="container hero-content">
     <div class="hero-badge">
@@ -898,19 +1089,19 @@ footer .small {
     </p>
 
     <div class="hero-stats">
-      <div class="stat">
+      <div class="stat tiltable">
         <div class="stat-value" data-target="5" data-suffix="">0</div>
         <div class="stat-label">Tage Mut</div>
       </div>
-      <div class="stat">
+      <div class="stat tiltable">
         <div class="stat-value infinite-stat">∞</div>
         <div class="stat-label">Fragen</div>
       </div>
-      <div class="stat">
+      <div class="stat tiltable">
         <div class="stat-value" data-target="0" data-suffix="">0</div>
         <div class="stat-label">Angst</div>
       </div>
-      <div class="stat">
+      <div class="stat tiltable">
         <div class="stat-value" data-target="100" data-suffix="%">0%</div>
         <div class="stat-label">Einsatz</div>
       </div>
@@ -918,6 +1109,73 @@ footer .small {
   </div>
 </section>
 
+<!-- ===== TIMELINE (5 GÜN) ===== -->
+<section id="timeline-section">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">// bogy_week.log</span>
+      <h2 class="section-title">5 Tage.<br>5 Erinnerungen.</h2>
+      <p class="section-intro">
+        Eine Woche geht schnell vorbei. Aber manche Momente bleiben.
+        Hier sind die, die geblieben sind.
+      </p>
+    </div>
+
+    <div class="timeline">
+      <div class="day">
+        <div class="day-dot"></div>
+        <div class="day-card tiltable">
+          <span class="day-label">Tag 01 · Montag</span>
+          <h3>Der erste Tag</h3>
+          <p>Neue Umgebung, neue Menschen, neue Technik. Viele Praktikanten wären zurückhaltend. Timo nicht. Fragen stellen, zuhören, mitmachen — von der ersten Minute an.</p>
+          <span class="day-badge">🎯 FIRST_STEP_UNLOCKED</span>
+        </div>
+      </div>
+
+      <div class="day">
+        <div class="day-dot"></div>
+        <div class="day-card tiltable">
+          <span class="day-label">Tag 02 · Dienstag</span>
+          <h3>Hände schmutzig</h3>
+          <p>Hardware, Schraubenzieher, Kabel. Keine Theorie — echte Arbeit. Timo hat sich reingekniet, als wäre es sein eigener PC. Und das Ergebnis? Einwandfrei.</p>
+          <span class="day-badge">🔧 HANDS_ON_MASTER</span>
+        </div>
+      </div>
+
+      <div class="day">
+        <div class="day-dot"></div>
+        <div class="day-card tiltable">
+          <span class="day-label">Tag 03 · Mittwoch</span>
+          <h3>Ein Senior lächelt</h3>
+          <p>Eine ältere Kundin kam — unsicher, ein bisschen verloren mit ihrer Technik. Timo hat sich zu ihr gesetzt. Geduldig. Ruhig. Sie ging mit einem Lächeln. Das ist die Art, die man nicht lernen kann.</p>
+          <span class="day-badge">❤️ HEART_OF_GOLD</span>
+        </div>
+      </div>
+
+      <div class="day">
+        <div class="day-dot"></div>
+        <div class="day-card tiltable">
+          <span class="day-label">Tag 04 · Donnerstag</span>
+          <h3>Mehr Verantwortung</h3>
+          <p>Aufgaben, die nicht mehr „Praktikanten-Level" waren. Und Timo? Hat sie angenommen. Ohne Zögern. Ohne Zweifel. „Zeig mir wie." — und dann hat er es gemacht.</p>
+          <span class="day-badge">🚀 LEVEL_UP</span>
+        </div>
+      </div>
+
+      <div class="day">
+        <div class="day-dot"></div>
+        <div class="day-card tiltable">
+          <span class="day-label">Tag 05 · Freitag</span>
+          <h3>Das war's? Schon?</h3>
+          <p>Fünf Tage, die wie zwei gefühlt haben. Weil Timo nicht „abgewartet" hat, dass die Woche vorbei ist. Er hat jeden Tag genutzt. Jeden einzelnen. Und deshalb gibt es diese Seite.</p>
+          <span class="day-badge">⭐ LEGEND_STATUS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ACHIEVEMENTS ===== -->
 <section>
   <div class="container">
     <div class="reveal">
@@ -930,37 +1188,37 @@ footer .small {
     </div>
 
     <div class="achievements-grid">
-      <div class="achievement reveal">
+      <div class="achievement reveal tiltable">
         <div class="achievement-icon">🔧</div>
         <h3>Anpacker-Mentalität</h3>
         <p>Jede Aufgabe, die kam, wurde angenommen. Keine Ausreden, keine langen Diskussionen — einfach los.</p>
       </div>
 
-      <div class="achievement reveal">
+      <div class="achievement reveal tiltable">
         <div class="achievement-icon">🧠</div>
         <h3>Neugier-Level: MAX</h3>
         <p>Fragen wurden nicht aus Pflicht gestellt, sondern weil er wirklich verstehen wollte, <em>wie</em> Dinge funktionieren.</p>
       </div>
 
-      <div class="achievement reveal">
+      <div class="achievement reveal tiltable">
         <div class="achievement-icon">❤️</div>
         <h3>Herz für ältere Menschen</h3>
         <p>Ein Talent, das man nicht lernen kann: Ruhe, Geduld und echtes Interesse im Umgang mit älteren Kunden. Das ist Gold wert.</p>
       </div>
 
-      <div class="achievement reveal">
+      <div class="achievement reveal tiltable">
         <div class="achievement-icon">⚡</div>
         <h3>Warmherzig & Engagiert</h3>
         <p>Positive Energie von der ersten Minute an. Jeden Tag mit einem Lächeln, jede Aufgabe mit Einsatz.</p>
       </div>
 
-      <div class="achievement reveal">
+      <div class="achievement reveal tiltable">
         <div class="achievement-icon">🎯</div>
         <h3>Sorgfältig</h3>
         <p>Aufträge wurden nicht nur erledigt — sie wurden <em>gut</em> erledigt. Und das mit einer Genauigkeit, die überrascht hat.</p>
       </div>
 
-      <div class="achievement reveal">
+      <div class="achievement reveal tiltable">
         <div class="achievement-icon">🚀</div>
         <h3>Keine Berührungsängste</h3>
         <p>Ob Hardware, Software, Kundengespräch oder neues Tool — Timo hat sich nicht verstecken müssen. Er hat mitgemacht.</p>
@@ -969,6 +1227,7 @@ footer .small {
   </div>
 </section>
 
+<!-- ===== TERMINAL ===== -->
 <section>
   <div class="container">
     <div class="reveal">
@@ -1006,6 +1265,34 @@ footer .small {
   </div>
 </section>
 
+<!-- ===== QUIZ ===== -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">// personality_match.exe</span>
+      <h2 class="section-title">Bist du wie Timo?</h2>
+      <p class="section-intro">
+        5 Fragen. 30 Sekunden. Finde heraus, welche Superkraft dich am besten beschreibt.
+      </p>
+    </div>
+
+    <div class="quiz-wrapper reveal" id="quizWrapper">
+      <div class="quiz-progress" id="quizProgress">
+        <div class="quiz-progress-dot active"></div>
+        <div class="quiz-progress-dot"></div>
+        <div class="quiz-progress-dot"></div>
+        <div class="quiz-progress-dot"></div>
+        <div class="quiz-progress-dot"></div>
+      </div>
+
+      <div id="quizBody">
+        <!-- JS füllt -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SUPERPOWERS ===== -->
 <section>
   <div class="container">
     <div class="reveal">
@@ -1018,25 +1305,25 @@ footer .small {
     </div>
 
     <div class="superpowers">
-      <div class="power reveal">
+      <div class="power reveal tiltable">
         <div class="power-label">STAT_01</div>
         <h3>Mut</h3>
         <p>Der hat keine Angst vor dem Neuen. Der probiert erst, und fragt dann, ob er's richtig gemacht hat.</p>
       </div>
 
-      <div class="power reveal">
+      <div class="power reveal tiltable">
         <div class="power-label">STAT_02</div>
         <h3>Neugier</h3>
         <p>Will immer wissen: <em>Warum funktioniert das so?</em> Das ist der Unterschied zwischen Mitlaufen und Verstehen.</p>
       </div>
 
-      <div class="power reveal">
+      <div class="power reveal tiltable">
         <div class="power-label">STAT_03</div>
         <h3>Empathie</h3>
         <p>Der kann mit einer 80-jährigen Kundin sprechen, als wäre sie seine Oma. Und das meint sie auch.</p>
       </div>
 
-      <div class="power reveal">
+      <div class="power reveal tiltable">
         <div class="power-label">STAT_04</div>
         <h3>Ausdauer</h3>
         <p>Eine Woche. Jeden Tag voll da. Jeden Tag neugierig. Jeden Tag ein Stück mehr gelernt.</p>
@@ -1045,9 +1332,10 @@ footer .small {
   </div>
 </section>
 
+<!-- ===== MESSAGE ===== -->
 <section>
   <div class="container">
-    <div class="message reveal">
+    <div class="message reveal tiltable">
       <p class="message-text">
         Timo — du bist jetzt in einem Alter, in dem du <strong>alles</strong> ausprobieren kannst.
         Hab vor <strong>nichts</strong> Angst. Die Welt ist riesig, und es gibt tausend Wege.
@@ -1068,6 +1356,7 @@ footer .small {
   </div>
 </section>
 
+<!-- ===== FUTURE ===== -->
 <section class="future">
   <div class="container">
     <div class="reveal">
@@ -1079,30 +1368,12 @@ footer .small {
       </h2>
 
       <div class="future-paths">
-        <div class="path">
-          <span class="path-emoji">👨‍🍳</span>
-          Koch
-        </div>
-        <div class="path">
-          <span class="path-emoji">💻</span>
-          IT-Profi
-        </div>
-        <div class="path">
-          <span class="path-emoji">🚀</span>
-          Gründer
-        </div>
-        <div class="path">
-          <span class="path-emoji">🎓</span>
-          Studium
-        </div>
-        <div class="path">
-          <span class="path-emoji">🔧</span>
-          Handwerk
-        </div>
-        <div class="path">
-          <span class="path-emoji">❓</span>
-          Offen
-        </div>
+        <div class="path"><span class="path-emoji">👨‍🍳</span>Koch</div>
+        <div class="path"><span class="path-emoji">💻</span>IT-Profi</div>
+        <div class="path"><span class="path-emoji">🚀</span>Gründer</div>
+        <div class="path"><span class="path-emoji">🎓</span>Studium</div>
+        <div class="path"><span class="path-emoji">🔧</span>Handwerk</div>
+        <div class="path"><span class="path-emoji">❓</span>Offen</div>
       </div>
 
       <p class="tagline">
@@ -1114,6 +1385,7 @@ footer .small {
   </div>
 </section>
 
+<!-- ===== FOOTER ===== -->
 <footer>
   <div class="container">
     <div class="footer-logo" id="footerLogo">
@@ -1130,16 +1402,167 @@ footer .small {
 const isMobile = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// ===== TYPING EFFECT =====
+// ===== 1. SCROLL PROGRESS BAR =====
+const scrollProgress = document.getElementById('scrollProgress');
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const scrollPercent = (scrollTop / docHeight) * 100;
+  scrollProgress.style.width = scrollPercent + '%';
+}, { passive: true });
+
+// ===== 2. MATRIX BACKGROUND =====
+if (!reducedMotion) {
+  const canvas = document.getElementById('matrixCanvas');
+  const ctx = canvas.getContext('2d');
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  const chars = '01アイウエオカキクケコサシスセソタチツテト{}<>/\\|#$%&';
+  const fontSize = isMobile ? 12 : 14;
+  const columns = Math.floor(canvas.width / fontSize);
+  const drops = Array(columns).fill(1).map(() => Math.random() * canvas.height / fontSize);
+
+  function drawMatrix() {
+    ctx.fillStyle = 'rgba(10, 14, 26, 0.08)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = '#00ff88';
+    ctx.font = fontSize + 'px monospace';
+
+    for (let i = 0; i < drops.length; i++) {
+      const text = chars[Math.floor(Math.random() * chars.length)];
+      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+  }
+
+  let matrixActive = true;
+  function matrixLoop() {
+    if (matrixActive) drawMatrix();
+    setTimeout(matrixLoop, isMobile ? 80 : 60);
+  }
+  matrixLoop();
+
+  // Battery saver
+  document.addEventListener('visibilitychange', () => {
+    matrixActive = !document.hidden;
+  });
+}
+
+// ===== 3. KONFETI (Seite geladığında) =====
+function fireKonfeti() {
+  const canvas = document.getElementById('konfetiCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const colors = ['#00ff88', '#ffb800', '#ff3d71', '#7c5cff', '#33afe2'];
+  const particles = [];
+  const count = isMobile ? 60 : 120;
+
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: canvas.width / 2,
+      y: canvas.height / 3,
+      vx: (Math.random() - 0.5) * 15,
+      vy: Math.random() * -15 - 5,
+      size: Math.random() * 8 + 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rotation: Math.random() * 360,
+      rotationSpeed: (Math.random() - 0.5) * 10,
+      gravity: 0.3,
+      life: 1
+    });
+  }
+
+  let animationFrame;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let alive = 0;
+    particles.forEach(p => {
+      if (p.life <= 0) return;
+      alive++;
+
+      p.vy += p.gravity;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rotation += p.rotationSpeed;
+      p.life -= 0.008;
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation * Math.PI / 180);
+      ctx.globalAlpha = p.life;
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size * 0.4);
+      ctx.restore();
+    });
+
+    if (alive > 0) {
+      animationFrame = requestAnimationFrame(animate);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+  animate();
+}
+
+// Sayfa yüklenince konfeti patlat (1 kere)
+window.addEventListener('load', () => {
+  if (!reducedMotion && !sessionStorage.getItem('timo_konfeti_shown')) {
+    setTimeout(fireKonfeti, 500);
+    sessionStorage.setItem('timo_konfeti_shown', '1');
+  }
+});
+
+// ===== 4. 3D TILT =====
+if (!isMobile && !reducedMotion) {
+  document.querySelectorAll('.tiltable').forEach(el => {
+    el.addEventListener('mousemove', (e) => {
+      const rect = el.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = ((y - centerY) / centerY) * -8;
+      const rotateY = ((x - centerX) / centerX) * 8;
+      el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+    });
+    el.addEventListener('mouseleave', () => {
+      el.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+    });
+  });
+} else if (isMobile && !reducedMotion) {
+  // Mobilde: device orientation ile hafif tilt (battery-friendly, throttled)
+  let orientationThrottle = false;
+  window.addEventListener('deviceorientation', (e) => {
+    if (orientationThrottle) return;
+    orientationThrottle = true;
+    setTimeout(() => orientationThrottle = false, 100);
+
+    const rotateX = Math.max(-4, Math.min(4, (e.beta || 0) / 10));
+    const rotateY = Math.max(-4, Math.min(4, (e.gamma || 0) / 10));
+    document.querySelectorAll('.tiltable').forEach(el => {
+      el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+  });
+}
+
+// ===== 5. TYPING EFFECT =====
 const typingEl = document.querySelector('.typing');
-const messages = [
-  'status: ready',
-  'future: loading...',
-  'potential: unlimited',
-  'mode: explore'
-];
-let msgIdx = 0, charIdx = 0, isDeleting = false;
-let typingActive = true;
+const messages = ['status: ready', 'future: loading...', 'potential: unlimited', 'mode: explore'];
+let msgIdx = 0, charIdx = 0, isDeleting = false, typingActive = true;
 
 function typeLoop() {
   if (!typingEl || !typingActive) return;
@@ -1153,16 +1576,14 @@ function typeLoop() {
     if (charIdx < 0) {
       isDeleting = false;
       msgIdx = (msgIdx + 1) % messages.length;
-      setTimeout(typeLoop, 400);
-      return;
+      setTimeout(typeLoop, 400); return;
     }
     setTimeout(typeLoop, deleteSpeed);
   } else {
     typingEl.textContent = current.substring(0, charIdx++);
     if (charIdx > current.length) {
       isDeleting = true;
-      setTimeout(typeLoop, pauseEnd);
-      return;
+      setTimeout(typeLoop, pauseEnd); return;
     }
     setTimeout(typeLoop, typeSpeed);
   }
@@ -1178,7 +1599,7 @@ if (typingEl && !reducedMotion) {
   typingObserver.observe(typingEl);
 }
 
-// ===== REVEAL =====
+// ===== 6. REVEAL =====
 if ('IntersectionObserver' in window) {
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -1187,29 +1608,24 @@ if ('IntersectionObserver' in window) {
         revealObserver.unobserve(entry.target);
       }
     });
-  }, {
-    threshold: 0.15,
-    rootMargin: '0px 0px -50px 0px'
-  });
-  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+  document.querySelectorAll('.reveal, .day').forEach(el => revealObserver.observe(el));
 } else {
-  document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+  document.querySelectorAll('.reveal, .day').forEach(el => el.classList.add('visible'));
 }
 
-// ===== STAT COUNTER — Sayfa yüklenince sayıları 0'dan hedefe anime et =====
+// ===== 7. STAT COUNTER =====
 function animateCounter(el) {
   const target = parseInt(el.dataset.target, 10);
   const suffix = el.dataset.suffix || '';
-  const duration = 1500; // ms
+  const duration = 1500;
   const steps = 40;
   const stepTime = duration / steps;
   let current = 0;
   const increment = target / steps;
 
-  // 0 hedef için özel (sadece 0 göster, animasyon yok ama pulse efekti)
   if (target === 0) {
     el.textContent = '0' + suffix;
-    el.style.animation = 'infinite-pulse 2s ease-in-out infinite';
     return;
   }
 
@@ -1224,12 +1640,10 @@ function animateCounter(el) {
   }, stepTime);
 }
 
-// Hero stats'a özel observer — görünür olunca bir kere anime et
 const statsObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      const statValues = entry.target.querySelectorAll('.stat-value[data-target]');
-      statValues.forEach((el, idx) => {
+      entry.target.querySelectorAll('.stat-value[data-target]').forEach((el, idx) => {
         setTimeout(() => animateCounter(el), idx * 150);
       });
       statsObserver.unobserve(entry.target);
@@ -1240,21 +1654,167 @@ const statsObserver = new IntersectionObserver((entries) => {
 const heroStats = document.querySelector('.hero-stats');
 if (heroStats) statsObserver.observe(heroStats);
 
-// ===== Visibility API — battery saver =====
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) {
-    typingActive = false;
-  } else {
-    typingActive = true;
-    if (typingEl) typeLoop();
+// ===== 8. QUIZ =====
+const quizData = [
+  {
+    q: "Neue Aufgabe — was machst du zuerst?",
+    options: [
+      { text: "🚀 Einfach anfangen, lernen unterwegs", trait: "mut" },
+      { text: "🧠 Erst verstehen wie alles funktioniert", trait: "neugier" },
+      { text: "👂 Fragen, wer am besten helfen kann", trait: "empathie" },
+      { text: "🎯 Plan machen und Schritt für Schritt", trait: "ausdauer" }
+    ]
+  },
+  {
+    q: "Ein älterer Kunde hat ein Technik-Problem — wie reagierst du?",
+    options: [
+      { text: "🔧 Direkt reparieren, schnell und effizient", trait: "mut" },
+      { text: "🔍 Erklären, wie man es selbst lösen könnte", trait: "neugier" },
+      { text: "☕ Ruhig zuhören, Zeit nehmen", trait: "empathie" },
+      { text: "📋 Problem notieren und gründlich lösen", trait: "ausdauer" }
+    ]
+  },
+  {
+    q: "Was motiviert dich am meisten?",
+    options: [
+      { text: "💥 Etwas Neues wagen", trait: "mut" },
+      { text: "💡 Verstehen, wie Dinge wirklich funktionieren", trait: "neugier" },
+      { text: "🤝 Anderen helfen", trait: "empathie" },
+      { text: "🏁 Eine Aufgabe wirklich zu Ende bringen", trait: "ausdauer" }
+    ]
+  },
+  {
+    q: "Du scheiterst an etwas — was dann?",
+    options: [
+      { text: "🔥 Nochmal probieren, noch mutiger", trait: "mut" },
+      { text: "🔬 Analysieren, woran es lag", trait: "neugier" },
+      { text: "💬 Darüber reden, Hilfe annehmen", trait: "empathie" },
+      { text: "⚙️ Anderen Weg suchen und weiter", trait: "ausdauer" }
+    ]
+  },
+  {
+    q: "In 10 Jahren — wo siehst du dich?",
+    options: [
+      { text: "🚀 Als Gründer / eigener Chef", trait: "mut" },
+      { text: "🔬 Als Experte in meinem Bereich", trait: "neugier" },
+      { text: "👥 In einem Beruf, der Menschen hilft", trait: "empathie" },
+      { text: "🏗️ Etwas Großes aufgebaut, Schritt für Schritt", trait: "ausdauer" }
+    ]
   }
+];
+
+const quizResults = {
+  mut: {
+    emoji: "🔥",
+    title: "Du bist wie Timo: MUTIG",
+    desc: "Du probierst erst, und fragst dann. Keine Angst vor dem Neuen — genau wie Timo."
+  },
+  neugier: {
+    emoji: "🧠",
+    title: "Du bist wie Timo: NEUGIERIG",
+    desc: "Du willst immer verstehen, wie Dinge funktionieren. Das ist der Weg zu echtem Wissen."
+  },
+  empathie: {
+    emoji: "❤️",
+    title: "Du bist wie Timo: EMPATHISCH",
+    desc: "Du hast ein Herz für Menschen. Das ist eine Eigenschaft, die man nicht lernen kann — und die Gold wert ist."
+  },
+  ausdauer: {
+    emoji: "⚡",
+    title: "Du bist wie Timo: AUSDAUERND",
+    desc: "Du gibst nicht auf. Jeden Tag ein bisschen mehr — das ist der Weg, wie man wirklich etwas erreicht."
+  }
+};
+
+let quizState = { current: 0, scores: { mut: 0, neugier: 0, empathie: 0, ausdauer: 0 } };
+const quizBody = document.getElementById('quizBody');
+const quizProgress = document.getElementById('quizProgress');
+const quizWrapper = document.getElementById('quizWrapper');
+
+function renderQuiz() {
+  const q = quizData[quizState.current];
+
+  // Progress dots
+  const dots = quizProgress.querySelectorAll('.quiz-progress-dot');
+  dots.forEach((dot, i) => {
+    dot.classList.remove('active', 'done');
+    if (i < quizState.current) dot.classList.add('done');
+    else if (i === quizState.current) dot.classList.add('active');
+  });
+
+  quizBody.innerHTML = `
+    <div class="quiz-question">${q.q}</div>
+    <div class="quiz-options">
+      ${q.options.map((opt, idx) =>
+        `<button class="quiz-option" data-trait="${opt.trait}" data-idx="${idx}">${opt.text}</button>`
+      ).join('')}
+    </div>
+  `;
+
+  quizBody.querySelectorAll('.quiz-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const trait = btn.dataset.trait;
+      quizState.scores[trait]++;
+      quizState.current++;
+
+      if (quizState.current >= quizData.length) {
+        showResult();
+      } else {
+        renderQuiz();
+      }
+    });
+  });
+}
+
+function showResult() {
+  const max = Object.entries(quizState.scores).reduce((a, b) => a[1] > b[1] ? a : b);
+  const result = quizResults[max[0]];
+
+  quizProgress.querySelectorAll('.quiz-progress-dot').forEach(d => {
+    d.classList.remove('active');
+    d.classList.add('done');
+  });
+
+  quizBody.innerHTML = `
+    <div class="quiz-result">
+      <span class="quiz-result-emoji">${result.emoji}</span>
+      <h3>${result.title}</h3>
+      <p>${result.desc}</p>
+      <button class="quiz-restart" id="quizRestart">Nochmal spielen</button>
+    </div>
+  `;
+
+  document.getElementById('quizRestart').addEventListener('click', () => {
+    quizState = { current: 0, scores: { mut: 0, neugier: 0, empathie: 0, ausdauer: 0 } };
+    renderQuiz();
+  });
+
+  // Konfeti bei Ergebnis
+  if (!reducedMotion) fireKonfeti();
+}
+
+// Quiz'i wrapper göründüğünde başlat
+const quizObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      quizWrapper.classList.add('active');
+      if (!quizBody.innerHTML.trim()) renderQuiz();
+      quizObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+quizObserver.observe(quizWrapper);
+
+// ===== 9. Visibility API =====
+document.addEventListener('visibilitychange', () => {
+  typingActive = !document.hidden;
+  if (!document.hidden && typingEl) typeLoop();
 });
 
-// ===== Console =====
+// ===== 10. Easter eggs =====
 console.log('%c Hey Timo! 👋', 'font-size: 20px; color: #00ff88; font-weight: bold;');
 console.log('%c Wenn du das liest — du bist schon Entwickler. 😉', 'font-size: 13px; color: #ffb800;');
 
-// ===== Easter eggs =====
 if (!isMobile) {
   let keys = [];
   const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
@@ -1262,13 +1822,12 @@ if (!isMobile) {
     keys.push(e.key);
     keys = keys.slice(-10);
     if (keys.join(',') === konami.join(',')) {
-      alert('🎮 Cheat Code aktiviert!\n\nTimo hat Level 99 freigeschaltet.\nKeine Limits mehr. Go get it. 🚀');
+      fireKonfeti();
+      setTimeout(() => alert('🎮 Cheat Code aktiviert!\n\nTimo hat Level 99 freigeschaltet.\nKeine Limits mehr. Go get it. 🚀'), 500);
     }
   });
-  console.log('%c Tipp: ↑ ↑ ↓ ↓ ← → ← → B A', 'font-size: 11px; color: #8892a8;');
 } else {
-  let tapCount = 0;
-  let tapTimer;
+  let tapCount = 0, tapTimer;
   const footerLogo = document.getElementById('footerLogo');
   if (footerLogo) {
     footerLogo.addEventListener('click', () => {
@@ -1277,7 +1836,8 @@ if (!isMobile) {
       tapTimer = setTimeout(() => { tapCount = 0; }, 2000);
       if (tapCount >= 7) {
         tapCount = 0;
-        alert('🎮 Secret entdeckt!\n\nTimo — du hast\'s gefunden.\nGenau das ist die richtige Einstellung: Herumprobieren, bis man etwas Neues entdeckt. 🚀');
+        fireKonfeti();
+        setTimeout(() => alert('🎮 Secret entdeckt!\n\nTimo — du hast\'s gefunden.\nGenau das ist die richtige Einstellung: Herumprobieren, bis man etwas Neues entdeckt. 🚀'), 500);
       }
     });
   }
