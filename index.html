@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timo Janzen · BoGy bei Hasi Elektronic · Die Woche, die zählte</title>
+<meta name="description" content="Timo Janzens BoGy-Praktikum bei Hasi Elektronic — eine Woche voller Technik, Neugier und echter Arbeit. Und der Anfang von etwas Großem.">
+<meta property="og:title" content="Timo Janzen · BoGy bei Hasi Elektronic">
+<meta property="og:description" content="Eine Woche. Unendlich viele Möglichkeiten. Und ein junger Mensch, der keine Angst hat, alles auszuprobieren.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0e1a;
+  --bg-card: #131827;
+  --bg-elev: #1a2033;
+  --primary: #00ff88;
+  --primary-dim: #00cc6f;
+  --accent: #ff3d71;
+  --accent2: #ffb800;
+  --text: #e8ecf5;
+  --text-dim: #8892a8;
+  --border: #222938;
+  --glow: 0 0 40px rgba(0, 255, 136, 0.3);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Animated background */
+.bg-grid {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-gradient {
+  position: fixed;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at 30% 30%, rgba(0, 255, 136, 0.08), transparent 40%),
+              radial-gradient(circle at 70% 70%, rgba(255, 61, 113, 0.06), transparent 40%);
+  pointer-events: none;
+  z-index: 0;
+  animation: pulse 15s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 80px 0 60px;
+  position: relative;
+}
+
+.hero-content { width: 100%; }
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(0, 255, 136, 0.08);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--primary);
+  margin-bottom: 32px;
+  animation: fadeInUp 0.6s ease;
+}
+
+.hero-badge .pulse {
+  width: 8px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--primary); }
+  50% { opacity: 0.4; }
+}
+
+.hero h1 {
+  font-size: clamp(44px, 8vw, 96px);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 24px;
+  animation: fadeInUp 0.8s ease;
+}
+
+.hero h1 .accent {
+  background: linear-gradient(135deg, var(--primary), var(--accent2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-sub {
+  font-size: clamp(18px, 2.5vw, 24px);
+  color: var(--text-dim);
+  max-width: 640px;
+  margin-bottom: 48px;
+  animation: fadeInUp 1s ease;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 24px;
+  margin-top: 32px;
+  animation: fadeInUp 1.2s ease;
+}
+
+.stat {
+  padding: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+
+.stat:hover {
+  border-color: var(--primary);
+  transform: translateY(-4px);
+  box-shadow: var(--glow);
+}
+
+.stat-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== SECTION HEADER ===== */
+section {
+  padding: 100px 0;
+  position: relative;
+}
+
+.section-label {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--primary);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+  line-height: 1.1;
+}
+
+.section-intro {
+  font-size: 18px;
+  color: var(--text-dim);
+  max-width: 700px;
+  margin-bottom: 64px;
+}
+
+/* ===== ACHIEVEMENTS ===== */
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.achievement {
+  padding: 32px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  transition: all 0.4s;
+  position: relative;
+  overflow: hidden;
+}
+
+.achievement::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--accent2));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s;
+}
+
+.achievement:hover::before { transform: scaleX(1); }
+.achievement:hover {
+  transform: translateY(-8px);
+  border-color: var(--primary);
+  box-shadow: var(--glow);
+}
+
+.achievement-icon {
+  font-size: 40px;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+.achievement h3 {
+  font-size: 22px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.achievement p {
+  color: var(--text-dim);
+  font-size: 15px;
+}
+
+/* ===== TERMINAL (Code Block) ===== */
+.terminal {
+  background: #0d1220;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 48px 0;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.terminal-header {
+  background: #161c2d;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.terminal-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+}
+.dot-red { background: #ff5f57; }
+.dot-yellow { background: #febc2e; }
+.dot-green { background: #28c840; }
+
+.terminal-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-left: 12px;
+}
+
+.terminal-body {
+  padding: 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.term-line { display: block; }
+.term-prompt { color: var(--primary); }
+.term-comment { color: var(--text-dim); }
+.term-string { color: var(--accent2); }
+.term-keyword { color: var(--accent); }
+.term-output { color: var(--text); opacity: 0.9; }
+
+/* ===== SUPERPOWERS ===== */
+.superpowers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.power {
+  padding: 28px;
+  background: var(--bg-elev);
+  border-radius: 16px;
+  border-left: 3px solid var(--primary);
+  transition: transform 0.3s;
+}
+
+.power:nth-child(2) { border-left-color: var(--accent); }
+.power:nth-child(3) { border-left-color: var(--accent2); }
+.power:nth-child(4) { border-left-color: #7c5cff; }
+
+.power:hover { transform: translateX(6px); }
+
+.power-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 8px;
+}
+
+.power h3 {
+  font-size: 20px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.power p {
+  color: var(--text-dim);
+  font-size: 14px;
+}
+
+/* ===== MESSAGE (from Hamdi) ===== */
+.message {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(255, 184, 0, 0.05));
+  border: 1px solid rgba(0, 255, 136, 0.2);
+  border-radius: 24px;
+  padding: 48px;
+  position: relative;
+}
+
+.message::before {
+  content: '"';
+  position: absolute;
+  top: 20px;
+  left: 40px;
+  font-size: 120px;
+  color: var(--primary);
+  opacity: 0.2;
+  line-height: 1;
+  font-family: Georgia, serif;
+}
+
+.message-text {
+  font-size: clamp(18px, 2.2vw, 24px);
+  line-height: 1.6;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.message-text strong {
+  background: linear-gradient(135deg, var(--primary), var(--accent2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+
+.message-author {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.author-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #33afe2, #00ff88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--bg);
+}
+
+.author-info strong {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 2px;
+}
+
+.author-info span {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+/* ===== FUTURE / CTA ===== */
+.future {
+  text-align: center;
+  padding: 120px 0;
+}
+
+.future-title {
+  font-size: clamp(40px, 7vw, 80px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin-bottom: 32px;
+}
+
+.future-title .gradient {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent2) 50%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.future-paths {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  max-width: 800px;
+  margin: 48px auto;
+}
+
+.path {
+  padding: 24px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  transition: all 0.3s;
+  cursor: default;
+}
+
+.path:hover {
+  border-color: var(--primary);
+  background: var(--bg-elev);
+  transform: scale(1.05);
+}
+
+.path-emoji {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.tagline {
+  font-size: clamp(20px, 3vw, 32px);
+  color: var(--text-dim);
+  margin-top: 40px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.4;
+}
+
+.tagline .hl {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  padding: 60px 0 40px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  background: var(--bg-card);
+}
+
+.footer-logo {
+  display: inline-block;
+  margin-bottom: 16px;
+}
+
+.footer-logo .hasi {
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #33afe2;
+  font-size: 20px;
+}
+
+.footer-logo .sub {
+  font-style: italic;
+  color: #33afe2;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+footer p {
+  color: var(--text-dim);
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+footer .small {
+  font-size: 12px;
+  opacity: 0.6;
+  margin-top: 16px;
+}
+
+/* ===== TYPING EFFECT ===== */
+.typing::after {
+  content: '|';
+  animation: blink 1s infinite;
+  color: var(--primary);
+}
+
+/* Reveal on scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .message { padding: 32px 24px; }
+  section { padding: 60px 0; }
+  .hero { padding: 60px 0 40px; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-gradient"></div>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="container hero-content">
+    <div class="hero-badge">
+      <span class="pulse"></span>
+      <span>BOGY_PRAKTIKUM.STATUS == "LEGENDARY"</span>
+    </div>
+
+    <h1>
+      Timo Janzen.<br>
+      <span class="accent">Eine Woche.</span><br>
+      Unendlich viele Möglichkeiten.
+    </h1>
+
+    <p class="hero-sub">
+      Praktikant bei Hasi Elektronic. Neugierig. Mutig. Fleißig.
+      Einer, der nicht fragt <em>„darf ich?"</em> — sondern <strong style="color: var(--primary)">„zeig mir wie!"</strong>
+    </p>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-value">5</div>
+        <div class="stat-label">Tage Mut</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">∞</div>
+        <div class="stat-label">Fragen gestellt</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">0</div>
+        <div class="stat-label">Angst gehabt</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">100%</div>
+        <div class="stat-label">Einsatz</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ACHIEVEMENTS ===== -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">// achievements_unlocked.log</span>
+      <h2 class="section-title">Was Timo diese Woche<br>gezeigt hat.</h2>
+      <p class="section-intro">
+        Jeder Praktikant kommt an. Wenige hinterlassen einen Eindruck.
+        Timo hat einen hinterlassen — und zwar einen, über den wir noch reden werden.
+      </p>
+    </div>
+
+    <div class="achievements-grid">
+      <div class="achievement reveal">
+        <div class="achievement-icon">🔧</div>
+        <h3>Anpacker-Mentalität</h3>
+        <p>Jede Aufgabe, die kam, wurde angenommen. Keine Ausreden, keine langen Diskussionen — einfach los.</p>
+      </div>
+
+      <div class="achievement reveal">
+        <div class="achievement-icon">🧠</div>
+        <h3>Neugier-Level: MAX</h3>
+        <p>Fragen wurden nicht aus Pflicht gestellt, sondern weil er wirklich verstehen wollte, <em>wie</em> Dinge funktionieren.</p>
+      </div>
+
+      <div class="achievement reveal">
+        <div class="achievement-icon">❤️</div>
+        <h3>Herz für ältere Menschen</h3>
+        <p>Ein Talent, das man nicht lernen kann: Ruhe, Geduld und echtes Interesse im Umgang mit älteren Kunden. Das ist Gold wert.</p>
+      </div>
+
+      <div class="achievement reveal">
+        <div class="achievement-icon">⚡</div>
+        <h3>Warmherzig & Engagiert</h3>
+        <p>Positive Energie von der ersten Minute an. Jeden Tag mit einem Lächeln, jede Aufgabe mit Einsatz.</p>
+      </div>
+
+      <div class="achievement reveal">
+        <div class="achievement-icon">🎯</div>
+        <h3>Sorgfältig</h3>
+        <p>Aufträge wurden nicht nur erledigt — sie wurden <em>gut</em> erledigt. Und das mit einer Genauigkeit, die überrascht hat.</p>
+      </div>
+
+      <div class="achievement reveal">
+        <div class="achievement-icon">🚀</div>
+        <h3>Keine Berührungsängste</h3>
+        <p>Ob Hardware, Software, Kundengespräch oder neues Tool — Timo hat sich nicht verstecken müssen. Er hat mitgemacht.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TERMINAL ===== -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">// system_readout.txt</span>
+      <h2 class="section-title">Diagnose nach 5 Tagen:</h2>
+    </div>
+
+    <div class="terminal reveal">
+      <div class="terminal-header">
+        <span class="terminal-dot dot-red"></span>
+        <span class="terminal-dot dot-yellow"></span>
+        <span class="terminal-dot dot-green"></span>
+        <span class="terminal-title">hasi@elektronic:~ $ timo --analyze</span>
+      </div>
+      <div class="terminal-body">
+        <span class="term-line"><span class="term-prompt">$</span> <span class="term-output">Analyzing practitioner: Timo Janzen</span></span>
+        <span class="term-line"><span class="term-output">  → Loading personality_profile.json... </span><span class="term-string">OK</span></span>
+        <span class="term-line"><span class="term-output">  → Scanning work_ethic... </span><span class="term-string">EXCELLENT</span></span>
+        <span class="term-line"><span class="term-output">  → Testing customer_interaction_module... </span><span class="term-string">OUTSTANDING</span></span>
+        <span class="term-line"><span class="term-output">  → Checking fear_levels... </span><span class="term-string">0.00%</span></span>
+        <span class="term-line">&nbsp;</span>
+        <span class="term-line"><span class="term-comment"># Ergebnis:</span></span>
+        <span class="term-line"><span class="term-keyword">const</span> timo = {</span>
+        <span class="term-line">&nbsp;&nbsp;name: <span class="term-string">"Timo Janzen"</span>,</span>
+        <span class="term-line">&nbsp;&nbsp;alter: <span class="term-string">"alles_ausprobieren"</span>,</span>
+        <span class="term-line">&nbsp;&nbsp;superpower: <span class="term-string">"mutig + warmherzig"</span>,</span>
+        <span class="term-line">&nbsp;&nbsp;limit: <span class="term-string">null</span></span>
+        <span class="term-line">};</span>
+        <span class="term-line">&nbsp;</span>
+        <span class="term-line"><span class="term-prompt">$</span> <span class="term-output">echo $timo.future</span></span>
+        <span class="term-line"><span class="term-string">&gt; "undefined — aber das ist genau der Punkt."</span></span>
+        <span class="term-line">&nbsp;</span>
+        <span class="term-line"><span class="term-prompt">$</span> <span class="typing" style="color: var(--primary)"></span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SUPERPOWERS ===== -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">// character_stats.exe</span>
+      <h2 class="section-title">Die 4 Superkräfte.</h2>
+      <p class="section-intro">
+        Das sind keine Skills, die du in einem Kurs lernst.
+        Das sind Eigenschaften, die dich im Leben weit bringen werden — egal, welchen Weg du wählst.
+      </p>
+    </div>
+
+    <div class="superpowers">
+      <div class="power reveal">
+        <div class="power-label">STAT_01</div>
+        <h3>Mut</h3>
+        <p>Der hat keine Angst vor dem Neuen. Der probiert erst, und fragt dann, ob er's richtig gemacht hat.</p>
+      </div>
+
+      <div class="power reveal">
+        <div class="power-label">STAT_02</div>
+        <h3>Neugier</h3>
+        <p>Will immer wissen: <em>Warum funktioniert das so?</em> Das ist der Unterschied zwischen Mitlaufen und Verstehen.</p>
+      </div>
+
+      <div class="power reveal">
+        <div class="power-label">STAT_03</div>
+        <h3>Empathie</h3>
+        <p>Der kann mit einer 80-jährigen Kundin sprechen, als wäre sie seine Oma. Und das meint sie auch.</p>
+      </div>
+
+      <div class="power reveal">
+        <div class="power-label">STAT_04</div>
+        <h3>Ausdauer</h3>
+        <p>Eine Woche. Jeden Tag voll da. Jeden Tag neugierig. Jeden Tag ein Stück mehr gelernt.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MESSAGE FROM HAMDI ===== -->
+<section>
+  <div class="container">
+    <div class="message reveal">
+      <p class="message-text">
+        Timo — du bist jetzt in einem Alter, in dem du <strong>alles</strong> ausprobieren kannst.
+        Hab vor <strong>nichts</strong> Angst. Die Welt ist riesig, und es gibt tausend Wege.
+        Probier sie aus. Geh um die Ecke. Mach Fehler. Lern. Und wenn du am Ende
+        Koch wirst, wie du es dir vorstellst — dann wirst du ein <strong>verdammt guter Koch</strong> sein.
+        Weil du genau die Eigenschaften hast, die zählen: Mut, Herz und Einsatz.
+        <br><br>
+        Das, was du diese Woche gezeigt hast — <strong>das ist selten</strong>. Bleib so.
+      </p>
+      <div class="message-author">
+        <div class="author-avatar">H</div>
+        <div class="author-info">
+          <strong>Hamdi Güncavdi</strong>
+          <span>Hasi Elektronic · Vaihingen/Enz</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FUTURE ===== -->
+<section class="future">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">// future_loading...</span>
+      <h2 class="future-title">
+        Koch? IT-ler?<br>
+        Unternehmer? Erfinder?<br>
+        <span class="gradient">Alles möglich.</span>
+      </h2>
+
+      <div class="future-paths">
+        <div class="path">
+          <span class="path-emoji">👨‍🍳</span>
+          Koch / Küchenchef
+        </div>
+        <div class="path">
+          <span class="path-emoji">💻</span>
+          IT-Spezialist
+        </div>
+        <div class="path">
+          <span class="path-emoji">🚀</span>
+          Gründer
+        </div>
+        <div class="path">
+          <span class="path-emoji">🎓</span>
+          Studium
+        </div>
+        <div class="path">
+          <span class="path-emoji">🔧</span>
+          Handwerker
+        </div>
+        <div class="path">
+          <span class="path-emoji">❓</span>
+          Noch unbekannt
+        </div>
+      </div>
+
+      <p class="tagline">
+        Egal was du wählst, Timo —<br>
+        mach es mit <span class="hl">Mut</span>, <span class="hl">Neugier</span> und <span class="hl">ganzem Herzen</span>.<br>
+        So wie du diese Woche gearbeitet hast.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="footer-logo">
+      <div class="hasi">HASI</div>
+      <div class="sub">elektronic</div>
+    </div>
+    <p>Diese Seite wurde mit Freude für Timo erstellt.</p>
+    <p>Eine kleine Erinnerung an eine große Woche.</p>
+    <p class="small">© 2026 · Hasi Elektronic · Vaihingen an der Enz</p>
+  </div>
+</footer>
+
+<script>
+// Typing effect
+const typingEl = document.querySelector('.typing');
+const messages = [
+  'status: ready_for_anything',
+  'next_move: loading...',
+  'potential: unlimited',
+  'future: building...'
+];
+let msgIdx = 0, charIdx = 0, isDeleting = false;
+
+function typeLoop() {
+  if (!typingEl) return;
+  const current = messages[msgIdx];
+
+  if (isDeleting) {
+    typingEl.textContent = current.substring(0, charIdx--);
+    if (charIdx < 0) {
+      isDeleting = false;
+      msgIdx = (msgIdx + 1) % messages.length;
+      setTimeout(typeLoop, 400);
+      return;
+    }
+    setTimeout(typeLoop, 40);
+  } else {
+    typingEl.textContent = current.substring(0, charIdx++);
+    if (charIdx > current.length) {
+      isDeleting = true;
+      setTimeout(typeLoop, 2000);
+      return;
+    }
+    setTimeout(typeLoop, 80);
+  }
+}
+typeLoop();
+
+// Reveal on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Konami code Easter egg
+let keys = [];
+const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+document.addEventListener('keydown', (e) => {
+  keys.push(e.key);
+  keys = keys.slice(-10);
+  if (keys.join(',') === konami.join(',')) {
+    document.body.style.animation = 'pulse 0.5s 3';
+    alert('🎮 Cheat Code aktiviert!\n\nTimo hat Level 99 freigeschaltet.\nKeine Limits mehr. Go get it. 🚀');
+  }
+});
+
+console.log('%c Hey Timo! 👋', 'font-size: 24px; color: #00ff88; font-weight: bold;');
+console.log('%c Wenn du das liest — du bist schon Entwickler. 😉', 'font-size: 14px; color: #ffb800;');
+console.log('%c Tipp: Probier mal den Konami Code: ↑ ↑ ↓ ↓ ← → ← → B A', 'font-size: 12px; color: #8892a8;');
+</script>
+
+</body>
+</html>
