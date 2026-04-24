@@ -620,22 +620,26 @@ section {
   color: var(--text);
   text-align: left;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
   width: 100%;
   position: relative;
   z-index: 10;
   touch-action: manipulation;
   -webkit-appearance: none;
   appearance: none;
+  min-height: 48px;
+  display: block;
+  line-height: 1.4;
 }
 
 .quiz-option:active {
   background: var(--primary);
   color: var(--bg);
-  transform: scale(0.98);
+  border-color: var(--primary);
+  transform: scale(0.97);
 }
 
-.quiz-option:hover, .quiz-option:active {
+.quiz-option:hover {
   border-color: var(--primary);
   background: rgba(0, 255, 136, 0.08);
   transform: translateX(4px);
@@ -1798,28 +1802,15 @@ function renderQuiz() {
     <div class="quiz-question">${q.q}</div>
     <div class="quiz-options">
       ${q.options.map((opt, idx) =>
-        `<button class="quiz-option" data-trait="${opt.trait}" data-idx="${idx}">${opt.text}</button>`
+        `<button type="button" class="quiz-option" data-trait="${opt.trait}">${opt.text}</button>`
       ).join('')}
     </div>
   `;
-
-  quizBody.querySelectorAll('.quiz-option').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const trait = btn.dataset.trait;
-      quizState.scores[trait]++;
-      quizState.current++;
-
-      if (quizState.current >= quizData.length) {
-        showResult();
-      } else {
-        renderQuiz();
-      }
-    });
-  });
 }
 
 function showResult() {
-  const max = Object.entries(quizState.scores).reduce((a, b) => a[1] > b[1] ? a : b);
+  const entries = Object.entries(quizState.scores);
+  const max = entries.reduce((a, b) => a[1] > b[1] ? a : b);
   const result = quizResults[max[0]];
 
   quizProgress.querySelectorAll('.quiz-progress-dot').forEach(d => {
@@ -1832,30 +1823,46 @@ function showResult() {
       <span class="quiz-result-emoji">${result.emoji}</span>
       <h3>${result.title}</h3>
       <p>${result.desc}</p>
-      <button class="quiz-restart" id="quizRestart">Nochmal spielen</button>
+      <button type="button" class="quiz-restart" id="quizRestart">Nochmal spielen</button>
     </div>
   `;
 
-  document.getElementById('quizRestart').addEventListener('click', () => {
-    quizState = { current: 0, scores: { mut: 0, neugier: 0, empathie: 0, ausdauer: 0 } };
-    renderQuiz();
-  });
-
   // Konfeti bei Ergebnis
-  if (!reducedMotion) fireKonfeti();
+  if (!reducedMotion) setTimeout(fireKonfeti, 200);
 }
 
-// Quiz'i wrapper göründüğünde başlat
-const quizObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      quizWrapper.classList.add('active');
-      if (!quizBody.innerHTML.trim()) renderQuiz();
-      quizObserver.unobserve(entry.target);
+// EVENT DELEGATION — tek listener, tüm tıklamalar için
+// Tap & click desteği, preventDefault ile çift-tetikleme önle
+function handleQuizInteraction(e) {
+  const option = e.target.closest('.quiz-option');
+  const restart = e.target.closest('.quiz-restart');
+
+  if (option) {
+    e.preventDefault();
+    const trait = option.dataset.trait;
+    if (!trait || !quizState.scores.hasOwnProperty(trait)) return;
+
+    quizState.scores[trait]++;
+    quizState.current++;
+
+    if (quizState.current >= quizData.length) {
+      showResult();
+    } else {
+      renderQuiz();
     }
-  });
-}, { threshold: 0.3 });
-quizObserver.observe(quizWrapper);
+  } else if (restart) {
+    e.preventDefault();
+    quizState = { current: 0, scores: { mut: 0, neugier: 0, empathie: 0, ausdauer: 0 } };
+    renderQuiz();
+  }
+}
+
+// Hem click hem touchend dinle (iOS 300ms delay yok)
+quizBody.addEventListener('click', handleQuizInteraction);
+
+// HEMEN başlat — observer bekleme
+renderQuiz();
+quizWrapper.classList.add('active');
 
 // ===== 9. Visibility API =====
 document.addEventListener('visibilitychange', () => {
