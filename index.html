@@ -2,9 +2,12 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Timo Janzen · BoGy bei Hasi Elektronic · Die Woche, die zählte</title>
-<meta name="description" content="Timo Janzens BoGy-Praktikum bei Hasi Elektronic — eine Woche voller Technik, Neugier und echter Arbeit. Und der Anfang von etwas Großem.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0e1a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Timo Janzen · BoGy bei Hasi Elektronic</title>
+<meta name="description" content="Timo Janzens BoGy-Praktikum bei Hasi Elektronic — eine Woche voller Technik, Neugier und echter Arbeit.">
 <meta property="og:title" content="Timo Janzen · BoGy bei Hasi Elektronic">
 <meta property="og:description" content="Eine Woche. Unendlich viele Möglichkeiten. Und ein junger Mensch, der keine Angst hat, alles auszuprobieren.">
 <meta property="og:type" content="website">
@@ -14,7 +17,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 :root {
   --bg: #0a0e1a;
@@ -27,51 +30,102 @@
   --text: #e8ecf5;
   --text-dim: #8892a8;
   --border: #222938;
-  --glow: 0 0 40px rgba(0, 255, 136, 0.3);
+  --glow: 0 0 30px rgba(0, 255, 136, 0.25);
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
 
 body {
-  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
 }
 
-/* Animated background */
+/* ===== MOBIL-OPTIMIERTER HINTERGRUND ===== */
+.bg-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
 .bg-grid {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  position: absolute;
+  inset: 0;
   background-image:
-    linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 0;
+    linear-gradient(rgba(0, 255, 136, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 136, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
 }
 
-.bg-gradient {
-  position: fixed;
-  top: -50%; left: -50%;
-  width: 200%; height: 200%;
-  background: radial-gradient(circle at 30% 30%, rgba(0, 255, 136, 0.08), transparent 40%),
-              radial-gradient(circle at 70% 70%, rgba(255, 61, 113, 0.06), transparent 40%);
-  pointer-events: none;
-  z-index: 0;
-  animation: pulse 15s ease-in-out infinite;
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.4;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
 }
 
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.1); opacity: 0.8; }
+.blob-1 {
+  top: -10%;
+  left: -10%;
+  width: 400px;
+  height: 400px;
+  background: #00ff88;
+  animation: float-1 20s ease-in-out infinite;
+}
+
+.blob-2 {
+  bottom: -10%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: #ff3d71;
+  opacity: 0.2;
+  animation: float-2 25s ease-in-out infinite;
+}
+
+@keyframes float-1 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(50px, 30px, 0) scale(1.1); }
+}
+
+@keyframes float-2 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-40px, -40px, 0) scale(0.9); }
+}
+
+@media (max-width: 768px) {
+  .blob-1 { width: 250px; height: 250px; filter: blur(60px); }
+  .blob-2 { width: 280px; height: 280px; filter: blur(60px); }
+  .bg-grid { background-size: 40px 40px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .blob { animation: none !important; }
 }
 
 .container {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 20px;
   position: relative;
   z-index: 1;
 }
@@ -79,9 +133,10 @@ body {
 /* ===== HERO ===== */
 .hero {
   min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   align-items: center;
-  padding: 80px 0 60px;
+  padding: 60px 0 40px;
   position: relative;
 }
 
@@ -91,37 +146,47 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px;
+  padding: 8px 14px;
   background: rgba(0, 255, 136, 0.08);
   border: 1px solid rgba(0, 255, 136, 0.3);
   border-radius: 100px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
+  font-size: 11px;
   color: var(--primary);
-  margin-bottom: 32px;
-  animation: fadeInUp 0.6s ease;
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: fadeIn 0.6s ease forwards;
+  max-width: 100%;
+}
+
+.hero-badge span:last-child {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .hero-badge .pulse {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   background: var(--primary);
   border-radius: 50%;
-  animation: blink 1.5s infinite;
+  flex-shrink: 0;
+  animation: pulse-dot 1.8s infinite;
 }
 
-@keyframes blink {
-  0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--primary); }
-  50% { opacity: 0.4; }
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--primary); }
+  50% { opacity: 0.4; box-shadow: 0 0 2px var(--primary); }
 }
 
 .hero h1 {
-  font-size: clamp(44px, 8vw, 96px);
-  line-height: 1;
+  font-size: clamp(36px, 10vw, 96px);
+  line-height: 1.05;
   font-weight: 700;
   letter-spacing: -0.03em;
-  margin-bottom: 24px;
-  animation: fadeInUp 0.8s ease;
+  margin-bottom: 20px;
+  opacity: 0;
+  animation: fadeIn 0.8s ease 0.15s forwards;
 }
 
 .hero h1 .accent {
@@ -129,102 +194,130 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 .hero-sub {
-  font-size: clamp(18px, 2.5vw, 24px);
+  font-size: clamp(16px, 2.2vw, 24px);
   color: var(--text-dim);
   max-width: 640px;
-  margin-bottom: 48px;
-  animation: fadeInUp 1s ease;
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: fadeIn 1s ease 0.3s forwards;
+}
+
+.hero-sub strong {
+  color: var(--primary);
 }
 
 .hero-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 24px;
-  margin-top: 32px;
-  animation: fadeInUp 1.2s ease;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 28px;
+  opacity: 0;
+  animation: fadeIn 1.2s ease 0.45s forwards;
+}
+
+@media (min-width: 640px) {
+  .hero-stats {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
 }
 
 .stat {
-  padding: 20px;
+  padding: 16px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 12px;
-  transition: all 0.3s;
+  transition: border-color 0.25s, transform 0.25s;
 }
 
-.stat:hover {
-  border-color: var(--primary);
-  transform: translateY(-4px);
-  box-shadow: var(--glow);
+@media (hover: hover) {
+  .stat:hover {
+    border-color: var(--primary);
+    transform: translateY(-4px);
+    box-shadow: var(--glow);
+  }
 }
 
 .stat-value {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 32px;
+  font-size: clamp(24px, 5vw, 32px);
   font-weight: 700;
   color: var(--primary);
   margin-bottom: 4px;
 }
 
 .stat-label {
-  font-size: 13px;
+  font-size: 11px;
   color: var(--text-dim);
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== SECTION HEADER ===== */
+/* ===== SECTION ===== */
 section {
-  padding: 100px 0;
+  padding: 70px 0;
   position: relative;
+}
+
+@media (min-width: 768px) {
+  section { padding: 100px 0; }
 }
 
 .section-label {
   display: inline-block;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--primary);
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .section-title {
-  font-size: clamp(32px, 5vw, 56px);
+  font-size: clamp(28px, 6vw, 56px);
   font-weight: 700;
   letter-spacing: -0.02em;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   line-height: 1.1;
 }
 
 .section-intro {
-  font-size: 18px;
+  font-size: clamp(15px, 2vw, 18px);
   color: var(--text-dim);
   max-width: 700px;
-  margin-bottom: 64px;
+  margin-bottom: 48px;
 }
 
 /* ===== ACHIEVEMENTS ===== */
 .achievements-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 560px) {
+  .achievements-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+}
+
+@media (min-width: 900px) {
+  .achievements-grid { grid-template-columns: repeat(3, 1fr); gap: 24px; }
 }
 
 .achievement {
-  padding: 32px;
+  padding: 24px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 16px;
-  transition: all 0.4s;
+  transition: border-color 0.3s, transform 0.3s;
   position: relative;
   overflow: hidden;
 }
@@ -240,72 +333,93 @@ section {
   transition: transform 0.4s;
 }
 
-.achievement:hover::before { transform: scaleX(1); }
-.achievement:hover {
-  transform: translateY(-8px);
-  border-color: var(--primary);
-  box-shadow: var(--glow);
+@media (hover: none) {
+  .achievement::before { transform: scaleX(0.3); opacity: 0.6; }
+  .achievement:active::before { transform: scaleX(1); opacity: 1; }
+  .achievement:active {
+    border-color: var(--primary);
+    transform: scale(0.98);
+  }
+}
+
+@media (hover: hover) {
+  .achievement:hover::before { transform: scaleX(1); }
+  .achievement:hover {
+    transform: translateY(-6px);
+    border-color: var(--primary);
+    box-shadow: var(--glow);
+  }
 }
 
 .achievement-icon {
-  font-size: 40px;
-  margin-bottom: 20px;
+  font-size: 36px;
+  margin-bottom: 16px;
   display: inline-block;
 }
 
 .achievement h3 {
-  font-size: 22px;
-  margin-bottom: 12px;
+  font-size: clamp(18px, 2.5vw, 22px);
+  margin-bottom: 10px;
   font-weight: 600;
 }
 
 .achievement p {
   color: var(--text-dim);
-  font-size: 15px;
+  font-size: 14px;
 }
 
-/* ===== TERMINAL (Code Block) ===== */
+/* ===== TERMINAL ===== */
 .terminal {
   background: #0d1220;
   border: 1px solid var(--border);
   border-radius: 12px;
   overflow: hidden;
-  margin: 48px 0;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  margin: 36px 0;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
 }
 
 .terminal-header {
   background: #161c2d;
-  padding: 12px 16px;
+  padding: 10px 14px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   border-bottom: 1px solid var(--border);
 }
 
-.terminal-dot {
-  width: 12px; height: 12px;
-  border-radius: 50%;
-}
+.terminal-dot { width: 11px; height: 11px; border-radius: 50%; }
 .dot-red { background: #ff5f57; }
 .dot-yellow { background: #febc2e; }
 .dot-green { background: #28c840; }
 
 .terminal-title {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-dim);
-  margin-left: 12px;
+  margin-left: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .terminal-body {
-  padding: 24px;
+  padding: 18px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 14px;
-  line-height: 1.8;
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-.term-line { display: block; }
+@media (min-width: 640px) {
+  .terminal-body {
+    padding: 24px;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+}
+
+.term-line { display: block; white-space: nowrap; }
 .term-prompt { color: var(--primary); }
 .term-comment { color: var(--text-dim); }
 .term-string { color: var(--accent2); }
@@ -315,12 +429,20 @@ section {
 /* ===== SUPERPOWERS ===== */
 .superpowers {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+@media (min-width: 560px) {
+  .superpowers { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+}
+
+@media (min-width: 900px) {
+  .superpowers { grid-template-columns: repeat(4, 1fr); }
 }
 
 .power {
-  padding: 28px;
+  padding: 22px;
   background: var(--bg-elev);
   border-radius: 16px;
   border-left: 3px solid var(--primary);
@@ -331,11 +453,17 @@ section {
 .power:nth-child(3) { border-left-color: var(--accent2); }
 .power:nth-child(4) { border-left-color: #7c5cff; }
 
-.power:hover { transform: translateX(6px); }
+@media (hover: hover) {
+  .power:hover { transform: translateX(6px); }
+}
+
+@media (hover: none) {
+  .power:active { transform: scale(0.98); }
+}
 
 .power-label {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-dim);
   text-transform: uppercase;
   letter-spacing: 0.15em;
@@ -343,8 +471,8 @@ section {
 }
 
 .power h3 {
-  font-size: 20px;
-  margin-bottom: 12px;
+  font-size: 19px;
+  margin-bottom: 10px;
   font-weight: 600;
 }
 
@@ -353,32 +481,45 @@ section {
   font-size: 14px;
 }
 
-/* ===== MESSAGE (from Hamdi) ===== */
+/* ===== MESSAGE ===== */
 .message {
-  background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(255, 184, 0, 0.05));
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.06), rgba(255, 184, 0, 0.05));
   border: 1px solid rgba(0, 255, 136, 0.2);
-  border-radius: 24px;
-  padding: 48px;
+  border-radius: 20px;
+  padding: 28px 24px;
   position: relative;
+}
+
+@media (min-width: 640px) {
+  .message { padding: 40px; border-radius: 24px; }
+}
+
+@media (min-width: 900px) {
+  .message { padding: 48px; }
 }
 
 .message::before {
   content: '"';
   position: absolute;
-  top: 20px;
-  left: 40px;
-  font-size: 120px;
+  top: 10px;
+  left: 20px;
+  font-size: 80px;
   color: var(--primary);
   opacity: 0.2;
   line-height: 1;
   font-family: Georgia, serif;
 }
 
+@media (min-width: 640px) {
+  .message::before { font-size: 120px; top: 20px; left: 40px; }
+}
+
 .message-text {
-  font-size: clamp(18px, 2.2vw, 24px);
+  font-size: clamp(16px, 2.2vw, 24px);
   line-height: 1.6;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
   position: relative;
+  padding-top: 8px;
 }
 
 .message-text strong {
@@ -386,51 +527,59 @@ section {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  color: transparent;
   font-weight: 700;
 }
 
 .message-author {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
 .author-avatar {
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background: linear-gradient(135deg, #33afe2, #00ff88);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 20px;
+  font-size: 18px;
   color: var(--bg);
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  .author-avatar { width: 56px; height: 56px; font-size: 20px; }
 }
 
 .author-info strong {
   display: block;
-  font-size: 16px;
+  font-size: 15px;
   margin-bottom: 2px;
 }
 
 .author-info span {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-dim);
 }
 
-/* ===== FUTURE / CTA ===== */
+/* ===== FUTURE ===== */
 .future {
   text-align: center;
-  padding: 120px 0;
+  padding: 80px 0;
 }
 
+@media (min-width: 768px) { .future { padding: 120px 0; } }
+
 .future-title {
-  font-size: clamp(40px, 7vw, 80px);
+  font-size: clamp(32px, 8vw, 80px);
   font-weight: 700;
-  line-height: 1;
+  line-height: 1.05;
   letter-spacing: -0.03em;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .future-title .gradient {
@@ -438,43 +587,65 @@ section {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 .future-paths {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
   max-width: 800px;
-  margin: 48px auto;
+  margin: 36px auto;
+}
+
+@media (min-width: 560px) {
+  .future-paths { grid-template-columns: repeat(3, 1fr); gap: 14px; }
 }
 
 .path {
-  padding: 24px 16px;
+  padding: 18px 12px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 12px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 14px;
-  transition: all 0.3s;
-  cursor: default;
+  font-size: 12px;
+  transition: border-color 0.3s, transform 0.3s, background 0.3s;
 }
 
-.path:hover {
-  border-color: var(--primary);
-  background: var(--bg-elev);
-  transform: scale(1.05);
+@media (min-width: 640px) {
+  .path { padding: 24px 16px; font-size: 14px; }
+}
+
+@media (hover: hover) {
+  .path:hover {
+    border-color: var(--primary);
+    background: var(--bg-elev);
+    transform: scale(1.05);
+  }
+}
+
+@media (hover: none) {
+  .path:active {
+    border-color: var(--primary);
+    background: var(--bg-elev);
+    transform: scale(0.97);
+  }
 }
 
 .path-emoji {
-  font-size: 32px;
+  font-size: 28px;
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+}
+
+@media (min-width: 640px) {
+  .path-emoji { font-size: 32px; margin-bottom: 8px; }
 }
 
 .tagline {
-  font-size: clamp(20px, 3vw, 32px);
+  font-size: clamp(18px, 2.5vw, 32px);
   color: var(--text-dim);
-  margin-top: 40px;
+  margin-top: 36px;
   max-width: 700px;
   margin-left: auto;
   margin-right: auto;
@@ -488,7 +659,8 @@ section {
 
 /* ===== FOOTER ===== */
 footer {
-  padding: 60px 0 40px;
+  padding: 48px 0 32px;
+  padding-bottom: calc(32px + env(safe-area-inset-bottom));
   border-top: 1px solid var(--border);
   text-align: center;
   background: var(--bg-card);
@@ -496,7 +668,9 @@ footer {
 
 .footer-logo {
   display: inline-block;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
+  cursor: pointer;
+  user-select: none;
 }
 
 .footer-logo .hasi {
@@ -515,54 +689,62 @@ footer {
 
 footer p {
   color: var(--text-dim);
-  font-size: 14px;
-  margin-bottom: 8px;
+  font-size: 13px;
+  margin-bottom: 6px;
 }
 
 footer .small {
-  font-size: 12px;
+  font-size: 11px;
   opacity: 0.6;
-  margin-top: 16px;
+  margin-top: 14px;
 }
 
 /* ===== TYPING EFFECT ===== */
 .typing::after {
-  content: '|';
-  animation: blink 1s infinite;
+  content: '▋';
+  animation: cursor-blink 1s infinite;
   color: var(--primary);
+  margin-left: 2px;
 }
 
-/* Reveal on scroll */
+@keyframes cursor-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* ===== REVEAL ===== */
 .reveal {
   opacity: 0;
-  transform: translateY(40px);
-  transition: all 0.8s;
+  transform: translateY(30px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
 }
 
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
+  will-change: auto;
 }
 
-/* Mobile */
 @media (max-width: 640px) {
-  .message { padding: 32px 24px; }
-  section { padding: 60px 0; }
-  .hero { padding: 60px 0 40px; }
+  .reveal { transform: translateY(20px); }
 }
 </style>
 </head>
 <body>
 
-<div class="bg-grid"></div>
-<div class="bg-gradient"></div>
+<div class="bg-layer">
+  <div class="bg-grid"></div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+</div>
 
-<!-- ===== HERO ===== -->
 <section class="hero">
   <div class="container hero-content">
     <div class="hero-badge">
       <span class="pulse"></span>
-      <span>BOGY_PRAKTIKUM.STATUS == "LEGENDARY"</span>
+      <span>STATUS: LEGENDARY</span>
     </div>
 
     <h1>
@@ -573,7 +755,7 @@ footer .small {
 
     <p class="hero-sub">
       Praktikant bei Hasi Elektronic. Neugierig. Mutig. Fleißig.
-      Einer, der nicht fragt <em>„darf ich?"</em> — sondern <strong style="color: var(--primary)">„zeig mir wie!"</strong>
+      Einer, der nicht fragt <em>„darf ich?"</em> — sondern <strong>„zeig mir wie!"</strong>
     </p>
 
     <div class="hero-stats">
@@ -583,11 +765,11 @@ footer .small {
       </div>
       <div class="stat">
         <div class="stat-value">∞</div>
-        <div class="stat-label">Fragen gestellt</div>
+        <div class="stat-label">Fragen</div>
       </div>
       <div class="stat">
         <div class="stat-value">0</div>
-        <div class="stat-label">Angst gehabt</div>
+        <div class="stat-label">Angst</div>
       </div>
       <div class="stat">
         <div class="stat-value">100%</div>
@@ -597,11 +779,10 @@ footer .small {
   </div>
 </section>
 
-<!-- ===== ACHIEVEMENTS ===== -->
 <section>
   <div class="container">
     <div class="reveal">
-      <span class="section-label">// achievements_unlocked.log</span>
+      <span class="section-label">// achievements_unlocked</span>
       <h2 class="section-title">Was Timo diese Woche<br>gezeigt hat.</h2>
       <p class="section-intro">
         Jeder Praktikant kommt an. Wenige hinterlassen einen Eindruck.
@@ -649,7 +830,6 @@ footer .small {
   </div>
 </section>
 
-<!-- ===== TERMINAL ===== -->
 <section>
   <div class="container">
     <div class="reveal">
@@ -662,25 +842,24 @@ footer .small {
         <span class="terminal-dot dot-red"></span>
         <span class="terminal-dot dot-yellow"></span>
         <span class="terminal-dot dot-green"></span>
-        <span class="terminal-title">hasi@elektronic:~ $ timo --analyze</span>
+        <span class="terminal-title">hasi@elektronic ~ $ timo --analyze</span>
       </div>
       <div class="terminal-body">
-        <span class="term-line"><span class="term-prompt">$</span> <span class="term-output">Analyzing practitioner: Timo Janzen</span></span>
-        <span class="term-line"><span class="term-output">  → Loading personality_profile.json... </span><span class="term-string">OK</span></span>
-        <span class="term-line"><span class="term-output">  → Scanning work_ethic... </span><span class="term-string">EXCELLENT</span></span>
-        <span class="term-line"><span class="term-output">  → Testing customer_interaction_module... </span><span class="term-string">OUTSTANDING</span></span>
-        <span class="term-line"><span class="term-output">  → Checking fear_levels... </span><span class="term-string">0.00%</span></span>
+        <span class="term-line"><span class="term-prompt">$</span> <span class="term-output">Analyzing: Timo Janzen</span></span>
+        <span class="term-line"><span class="term-output">  → work_ethic... </span><span class="term-string">EXCELLENT</span></span>
+        <span class="term-line"><span class="term-output">  → customer_skills... </span><span class="term-string">OUTSTANDING</span></span>
+        <span class="term-line"><span class="term-output">  → fear_levels... </span><span class="term-string">0.00%</span></span>
         <span class="term-line">&nbsp;</span>
         <span class="term-line"><span class="term-comment"># Ergebnis:</span></span>
         <span class="term-line"><span class="term-keyword">const</span> timo = {</span>
         <span class="term-line">&nbsp;&nbsp;name: <span class="term-string">"Timo Janzen"</span>,</span>
-        <span class="term-line">&nbsp;&nbsp;alter: <span class="term-string">"alles_ausprobieren"</span>,</span>
-        <span class="term-line">&nbsp;&nbsp;superpower: <span class="term-string">"mutig + warmherzig"</span>,</span>
+        <span class="term-line">&nbsp;&nbsp;alter: <span class="term-string">"alles_moeglich"</span>,</span>
+        <span class="term-line">&nbsp;&nbsp;superpower: <span class="term-string">"mut + herz"</span>,</span>
         <span class="term-line">&nbsp;&nbsp;limit: <span class="term-string">null</span></span>
         <span class="term-line">};</span>
         <span class="term-line">&nbsp;</span>
         <span class="term-line"><span class="term-prompt">$</span> <span class="term-output">echo $timo.future</span></span>
-        <span class="term-line"><span class="term-string">&gt; "undefined — aber das ist genau der Punkt."</span></span>
+        <span class="term-line"><span class="term-string">&gt; "undefined — und das ist gut so."</span></span>
         <span class="term-line">&nbsp;</span>
         <span class="term-line"><span class="term-prompt">$</span> <span class="typing" style="color: var(--primary)"></span></span>
       </div>
@@ -688,11 +867,10 @@ footer .small {
   </div>
 </section>
 
-<!-- ===== SUPERPOWERS ===== -->
 <section>
   <div class="container">
     <div class="reveal">
-      <span class="section-label">// character_stats.exe</span>
+      <span class="section-label">// character_stats</span>
       <h2 class="section-title">Die 4 Superkräfte.</h2>
       <p class="section-intro">
         Das sind keine Skills, die du in einem Kurs lernst.
@@ -728,7 +906,6 @@ footer .small {
   </div>
 </section>
 
-<!-- ===== MESSAGE FROM HAMDI ===== -->
 <section>
   <div class="container">
     <div class="message reveal">
@@ -752,25 +929,24 @@ footer .small {
   </div>
 </section>
 
-<!-- ===== FUTURE ===== -->
 <section class="future">
   <div class="container">
     <div class="reveal">
       <span class="section-label">// future_loading...</span>
       <h2 class="future-title">
         Koch? IT-ler?<br>
-        Unternehmer? Erfinder?<br>
+        Unternehmer?<br>
         <span class="gradient">Alles möglich.</span>
       </h2>
 
       <div class="future-paths">
         <div class="path">
           <span class="path-emoji">👨‍🍳</span>
-          Koch / Küchenchef
+          Koch
         </div>
         <div class="path">
           <span class="path-emoji">💻</span>
-          IT-Spezialist
+          IT-Profi
         </div>
         <div class="path">
           <span class="path-emoji">🚀</span>
@@ -782,11 +958,11 @@ footer .small {
         </div>
         <div class="path">
           <span class="path-emoji">🔧</span>
-          Handwerker
+          Handwerk
         </div>
         <div class="path">
           <span class="path-emoji">❓</span>
-          Noch unbekannt
+          Offen
         </div>
       </div>
 
@@ -799,10 +975,9 @@ footer .small {
   </div>
 </section>
 
-<!-- ===== FOOTER ===== -->
 <footer>
   <div class="container">
-    <div class="footer-logo">
+    <div class="footer-logo" id="footerLogo">
       <div class="hasi">HASI</div>
       <div class="sub">elektronic</div>
     </div>
@@ -813,19 +988,26 @@ footer .small {
 </footer>
 
 <script>
-// Typing effect
+const isMobile = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ===== TYPING EFFECT =====
 const typingEl = document.querySelector('.typing');
 const messages = [
-  'status: ready_for_anything',
-  'next_move: loading...',
+  'status: ready',
+  'future: loading...',
   'potential: unlimited',
-  'future: building...'
+  'mode: explore'
 ];
 let msgIdx = 0, charIdx = 0, isDeleting = false;
+let typingActive = true;
 
 function typeLoop() {
-  if (!typingEl) return;
+  if (!typingEl || !typingActive) return;
   const current = messages[msgIdx];
+  const typeSpeed = isMobile ? 100 : 80;
+  const deleteSpeed = isMobile ? 60 : 40;
+  const pauseEnd = isMobile ? 2500 : 2000;
 
   if (isDeleting) {
     typingEl.textContent = current.substring(0, charIdx--);
@@ -835,45 +1017,88 @@ function typeLoop() {
       setTimeout(typeLoop, 400);
       return;
     }
-    setTimeout(typeLoop, 40);
+    setTimeout(typeLoop, deleteSpeed);
   } else {
     typingEl.textContent = current.substring(0, charIdx++);
     if (charIdx > current.length) {
       isDeleting = true;
-      setTimeout(typeLoop, 2000);
+      setTimeout(typeLoop, pauseEnd);
       return;
     }
-    setTimeout(typeLoop, 80);
+    setTimeout(typeLoop, typeSpeed);
   }
 }
-typeLoop();
 
-// Reveal on scroll
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-    }
+if (typingEl && !reducedMotion) {
+  const typingObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      typingActive = entry.isIntersecting;
+      if (typingActive && !typingEl.textContent) typeLoop();
+    });
+  }, { threshold: 0.3 });
+  typingObserver.observe(typingEl);
+}
+
+// ===== REVEAL =====
+if ('IntersectionObserver' in window) {
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.15,
+    rootMargin: '0px 0px -50px 0px'
   });
-}, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+} else {
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+}
 
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-// Konami code Easter egg
-let keys = [];
-const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
-document.addEventListener('keydown', (e) => {
-  keys.push(e.key);
-  keys = keys.slice(-10);
-  if (keys.join(',') === konami.join(',')) {
-    document.body.style.animation = 'pulse 0.5s 3';
-    alert('🎮 Cheat Code aktiviert!\n\nTimo hat Level 99 freigeschaltet.\nKeine Limits mehr. Go get it. 🚀');
+// ===== Visibility API — battery saver =====
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    typingActive = false;
+  } else {
+    typingActive = true;
+    if (typingEl) typeLoop();
   }
 });
 
-console.log('%c Hey Timo! 👋', 'font-size: 24px; color: #00ff88; font-weight: bold;');
-console.log('%c Wenn du das liest — du bist schon Entwickler. 😉', 'font-size: 14px; color: #ffb800;');
-console.log('%c Tipp: Probier mal den Konami Code: ↑ ↑ ↓ ↓ ← → ← → B A', 'font-size: 12px; color: #8892a8;');
+// ===== Console =====
+console.log('%c Hey Timo! 👋', 'font-size: 20px; color: #00ff88; font-weight: bold;');
+console.log('%c Wenn du das liest — du bist schon Entwickler. 😉', 'font-size: 13px; color: #ffb800;');
+
+// ===== Easter eggs =====
+if (!isMobile) {
+  let keys = [];
+  const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+  document.addEventListener('keydown', (e) => {
+    keys.push(e.key);
+    keys = keys.slice(-10);
+    if (keys.join(',') === konami.join(',')) {
+      alert('🎮 Cheat Code aktiviert!\n\nTimo hat Level 99 freigeschaltet.\nKeine Limits mehr. Go get it. 🚀');
+    }
+  });
+  console.log('%c Tipp: ↑ ↑ ↓ ↓ ← → ← → B A', 'font-size: 11px; color: #8892a8;');
+} else {
+  let tapCount = 0;
+  let tapTimer;
+  const footerLogo = document.getElementById('footerLogo');
+  if (footerLogo) {
+    footerLogo.addEventListener('click', () => {
+      tapCount++;
+      clearTimeout(tapTimer);
+      tapTimer = setTimeout(() => { tapCount = 0; }, 2000);
+      if (tapCount >= 7) {
+        tapCount = 0;
+        alert('🎮 Secret entdeckt!\n\nTimo — du hast\'s gefunden.\nGenau das ist die richtige Einstellung: Herumprobieren, bis man etwas Neues entdeckt. 🚀');
+      }
+    });
+  }
+}
 </script>
 
 </body>
